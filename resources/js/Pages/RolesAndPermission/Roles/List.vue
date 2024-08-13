@@ -24,7 +24,14 @@ const targetToDelete = ref();
 
 const handleDelete = () => {
     const deleteForm = useForm({});
-    deleteForm.delete(route('users.roles.delete', {id: targetToDelete.value}))
+    deleteForm.delete(route('users.roles.delete', {id: targetToDelete.value}),{
+        onSuccess: ()=>{
+            toast.success('Driver Deleted.');
+        },
+        onError: () => {
+            toast.success("Driver can't Deleted.");
+        }
+    })
 }
 
 onMounted(()=> {

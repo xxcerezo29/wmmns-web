@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import { Bars3Icon, BuildingStorefrontIcon, HomeIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
 import MenuItem from '@/Components/ui/MenuItem.vue';
 import MenuItemDropdown from '@/Components/ui/MenuItemDropdown.vue';
+import { hasRole } from '@/functions';
 
 const isSidebarOpen = ref(false);
 
@@ -63,13 +64,20 @@ const closeSidebar = () => {
                         <HomeIcon class="h-6" />
                     </template>
                 </MenuItem>
+                <MenuItem pattern="trucks" routeName="trucks.list" label="Trucks">
+                    <template #menuIcon>
+                        <HomeIcon class="h-6" />
+                    </template>
+                </MenuItem>
                 <MenuItemDropdown label="Users" pattern="users">
                     <template #menuIcon>
                         <UserGroupIcon class="h-6" />
                     </template>
-                    <MenuItem pattern="users.all" routeName="users.all.list" label="All" />
-                    <MenuItem pattern="users.roles" routeName="users.roles.list" label="Roles" />
-                    <MenuItem pattern="users.permissions" routeName="users.permissions.list" label="Permissions" />
+                    <MenuItem v-if="hasRole('admin')" pattern="users.all" routeName="users.all.list" label="All" />
+                    <MenuItem pattern="users.drivers" routeName="users.drivers.list" label="Drivers" />
+                    <MenuItem v-if="hasRole('admin')" pattern="users.residents" routeName="users.residents.list" label="Residents" />
+                    <MenuItem v-if="hasRole('admin')" pattern="users.roles" routeName="users.roles.list" label="Roles" />
+                    <MenuItem v-if="hasRole('admin')" pattern="users.permissions" routeName="users.permissions.list" label="Permissions" />
                 </MenuItemDropdown>
                 
             </ul>

@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mobile_users', function (Blueprint $table) {
+        Schema::create('residents', function (Blueprint $table) {
             $table->id();
             $table->string('firstname');
             $table->string('middlename');
             $table->string('lastname');
             $table->string('line1');
             $table->string('line2')->nullable();
+            $table->string('barangay');
             $table->string('city');
             $table->string('province');
             $table->string('country');
@@ -45,7 +46,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mobile_users');
+        Schema::dropIfExists('residents');
         Schema::dropIfExists('personal_access_tokens');
     }
 };

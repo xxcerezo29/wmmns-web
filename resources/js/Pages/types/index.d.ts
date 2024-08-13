@@ -12,10 +12,21 @@ export interface User {
     }>
 }
 
+export interface Roles {
+    id: number;
+    name: string;
+}
+
+export interface Permissions {
+    id: number;
+    name: string;
+}
+
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;
-        stores: number;
+        roles: Roles;
+        permissions: Permissions;
     };
     flash: {
         message: string;

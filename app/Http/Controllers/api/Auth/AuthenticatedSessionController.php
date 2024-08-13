@@ -4,7 +4,9 @@ namespace App\Http\Controllers\api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Driver;
 use App\Models\MobileUser;
+use App\Models\Resident;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,9 +26,13 @@ class AuthenticatedSessionController extends Controller
         $request->validate([
             'email' => 'required|string|email',
             'password' => 'required|string',
+            'type' => 'required',
         ]);
 
-        $user = MobileUser::where('email', $request->email)->first();
+        if($request->type === 'resident')
+            $user = Resident::where('email', $request->email)->first();
+        else if($request->type === 'driver')
+            $user = Driver::where('email', $request->email)->first();
 
         if(Hash::check($request->password, $user->password)){
             Auth::login($user);

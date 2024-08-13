@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\DriversController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ResidentsController;
 use App\Http\Controllers\RolesController;
+use App\Http\Controllers\TrucksController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +27,14 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
 
+    Route::prefix('trucks')->group(function(){
+        Route::get('/all', [TrucksController::class, 'list'])->name('trucks.list');
+        Route::get('/truck-create', [TrucksController::class, 'create'])->name('trucks.create');
+        Route::post('/truck-create', [TrucksController::class, 'store'])->name('trucks.store');
+        Route::get('/truck-edit/{id}', [TrucksController::class, 'edit'])->name('trucks.edit');
+        Route::delete('/truck-delete/{id}', [TrucksController::class, 'destroy'])->name('trucks.delete');
+    });
+
     Route::prefix('users')->group(function () {
         Route::get('/all', [UsersController::class, 'list'])->name('users.all.list');
         Route::get('/user-update/{id}', [UsersController::class, 'edit'])->name('users.all.edit');
@@ -31,6 +42,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/user-create', [UsersController::class, 'store'])->name('users.all.store');
         Route::get('/user-create', [UsersController::class, 'create'])->name('users.all.create');
         Route::delete('/user-delete/{id}', [UsersController::class, 'destroy'])->name('users.all.delete');
+
+        Route::prefix('residents')->group(function(){
+            Route::get('/', [ResidentsController::class, 'list'])->name('users.residents.list');
+        });
+
+        Route::prefix('drivers')->group(function(){
+            Route::get('/', [DriversController::class, 'list'])->name('users.drivers.list');
+            Route::get('/driver-create', [DriversController::class,'create'])->name('users.drivers.create');
+            Route::post('/driver-create', [DriversController::class,'store'])->name('users.drivers.store');
+            Route::get('/driver-update/{id}', [DriversController::class,'edit'])->name('users.drivers.edit');
+            Route::post('/driver-update/{id}', [DriversController::class,'update'])->name('users.drivers.update');
+            Route::delete('/driver-delete/{id}', [DriversController::class,'destroy'])->name('users.drivers.delete');
+        });
 
         Route::prefix('roles')->group(function () {
             Route::get('/', [RolesController::class, 'list'])->name('users.roles.list');
