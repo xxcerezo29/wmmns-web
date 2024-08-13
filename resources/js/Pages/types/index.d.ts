@@ -1,7 +1,10 @@
 export interface User {
     id: number;
-    name: string;
+    firstname: string;
+    middlename: string;
+    lastname: string;
     email: string;
+    barangay: string;
     email_verified_at: string;
     roles: Array<{
         id: number;
@@ -9,12 +12,25 @@ export interface User {
     }>
 }
 
+export interface Roles {
+    id: number;
+    name: string;
+}
+
+export interface Permissions {
+    id: number;
+    name: string;
+}
+
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     auth: {
         user: User;
-        stores: number;
+        roles: Roles;
+        permissions: Permissions;
     };
     flash: {
-        store_id: string;
-    }
+        message: string;
+        status: string;
+    };
+    currentRouteName:string;
 }

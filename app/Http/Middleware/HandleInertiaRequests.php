@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -30,15 +31,46 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' =>  $request->user(),
+                'roles' => $user? $request->user()->roles()->get() : null,
+                'permissions' => $user? $request->user()->getPermissionsViaRoles() : null
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
+            'flash'=> [
+                'status' => fn () => $request->session()->get('status'),
+                'message' => fn() => $request->session()->get('message'),
+            ],
+            'currentRouteName' => $this->getRouteName($request)
         ];
+    }
+
+    public function getRouteName(Request $request): string
+    {
+        $path = $request->path(); // Get the URL path
+        $segments = explode('/', $path); // Split path into segments
+        $routeName = '';
+
+        // Check if path matches the pattern
+        if (Route::currentRouteName() === 'plans.index') {
+            $planName = urldecode($segments[3]); // Decode URL-encoded plan name
+           
+            $routeName = 'plans.index.' . $planName;      
+                
+        } elseif(Route::currentRouteName() === 'plans.edit' || Route::currentRouteName() === 'plans.add' || Route::currentRouteName() === 'plans.view') {
+            $planName = urldecode($segments[4]); // Decode URL-encoded plan name
+           
+            $routeName = 'plans.index.' . $planName;  
+        }else {
+            $routeName = Route::currentRouteName();
+        }
+
+        return $routeName??'';
     }
 }

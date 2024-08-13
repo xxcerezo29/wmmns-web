@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\MobileUser;
+use App\Models\Resident;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,19 +27,21 @@ class RegisteredUserController extends Controller
             'lastname' => 'required|string|max:255',
             'line1' => 'required|string|max:255',
             'line2' => 'nullable|string|max:255',
+            'barangay' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'province' => 'required|string|max:255',
             'country' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.MobileUser::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:'.Resident::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = MobileUser::create([
+        $user = Resident::create([
             'firstname' => $request->firstname,
             'middlename' => $request->middlename,
             'lastname' => $request->lastname,
             'line1' => $request->line1,
             'line2' => $request->line2,
+            'barangay' => $request->barangay,
             'city' => $request->city,
             'province' => $request->province,
             'country' => $request->country,

@@ -7,9 +7,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class MobileUser extends Authenticatable
+class Resident extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
+    
 
     protected $fillable= [
         'firstname',
@@ -17,6 +18,7 @@ class MobileUser extends Authenticatable
         'lastname',
         'line1',
         'line2',
+        'barangay',
         'city',
         'province',
         'country',
