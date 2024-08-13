@@ -85,6 +85,11 @@ const closeSidebar = () => {
                     </template>
                 </MenuItem>
                 
+                <MenuItem pattern="schedule" routeName="schedule.calendar" label="Schedules">
+                    <template #menuIcon>
+                        <HomeIcon class="h-6" />
+                    </template>
+                </MenuItem>
             </ul>
         </nav>
     </div>

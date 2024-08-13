@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DriversController;
+use App\Http\Controllers\GarbageCollectionScheduleController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResidentsController;
@@ -43,6 +44,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/route-edit/{id}', [RoutePlanController::class, 'edit'])->name('routes.edit');
         Route::post('/route-edit/{id}', [RoutePlanController::class, 'update'])->name('routes.update');
         Route::delete('/route-delete/{id}', [RoutePlanController::class, 'destroy'])->name('routes.destroy');
+    });
+
+    Route::prefix('schedule')->group(function(){
+        Route::get('/', [GarbageCollectionScheduleController::class,'list'])->name('schedule.calendar');
+        Route::get('/schedule-create', [GarbageCollectionScheduleController::class,'create'])->name('schedule.create');
     });
 
     Route::prefix('users')->group(function () {
