@@ -79,7 +79,11 @@ const closeSidebar = () => {
                     <MenuItem v-if="hasRole('admin')" pattern="users.roles" routeName="users.roles.list" label="Roles" />
                     <MenuItem v-if="hasRole('admin')" pattern="users.permissions" routeName="users.permissions.list" label="Permissions" />
                 </MenuItemDropdown>
-                
+                <MenuItem pattern="schedule" routeName="schedule.calendar" label="Schedules">
+                    <template #menuIcon>
+                        <HomeIcon class="h-6" />
+                    </template>
+                </MenuItem>
             </ul>
         </nav>
     </div>
