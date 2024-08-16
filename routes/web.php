@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DriversController;
 use App\Http\Controllers\GarbageCollectionScheduleController;
+use App\Http\Controllers\GarbageCollectionScheduleController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResidentsController;
