@@ -30,6 +30,13 @@ export interface Driver {
     mobile_number: string;
 }
 
+export interface Route{
+    id: number;
+    name: string;
+    barangay: string;
+    waypoint: string;
+}
+
 export interface Truck {
     id: number;
     barangay: string;

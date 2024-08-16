@@ -5,6 +5,7 @@ use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResidentsController;
 use App\Http\Controllers\RolesController;
+use App\Http\Controllers\RoutePlanController;
 use App\Http\Controllers\TrucksController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
@@ -33,6 +34,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/truck-create', [TrucksController::class, 'store'])->name('trucks.store');
         Route::get('/truck-edit/{id}', [TrucksController::class, 'edit'])->name('trucks.edit');
         Route::delete('/truck-delete/{id}', [TrucksController::class, 'destroy'])->name('trucks.delete');
+    });
+
+    Route::prefix('routes')->group(function() {
+        Route::get('/', [RoutePlanController::class, 'list'])->name('routes.list');
+        Route::get('/route-create', [RoutePlanController::class, 'create'])->name('routes.create');
+        Route::post('/route-create', [RoutePlanController::class, 'store'])->name('routes.store');
+        Route::get('/route-edit/{id}', [RoutePlanController::class, 'edit'])->name('routes.edit');
+        Route::post('/route-edit/{id}', [RoutePlanController::class, 'update'])->name('routes.update');
+        Route::delete('/route-delete/{id}', [RoutePlanController::class, 'destroy'])->name('routes.destroy');
     });
 
     Route::prefix('users')->group(function () {
