@@ -6,20 +6,21 @@ import { useForm } from '@inertiajs/vue3';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import { ICities, Roles, Route, Truck } from '../types/interface';
+import { ICities, Roles, Route, Schedule, Truck } from '../types/interface';
 import axios from 'axios';
 
 const props = defineProps<{
   routes: Array<Route>;
-  trucks: Array<Truck>
+  trucks: Array<Truck>;
+  Sched: Schedule;
 }>();
 
 const form = useForm({
-  truck_id: '',
-  day: '',
-  route: '',
-  time: '',
-  barangay: usePage().props.auth.user.barangay
+  truck_id: props.Sched.truck_id,
+  day: props.Sched.day,
+  route: props.Sched.route_id,
+  time: props.Sched.time,
+  barangay: props.Sched.barangay
 })
 
 const toast = useToast();
@@ -74,7 +75,7 @@ onMounted(() => {
                 <div class="label">
                   <span class="label-text">Truck</span>
                 </div>
-                <select v-model="form.truck_id" class="select select-bordered">
+                <select disabled v-model="form.truck_id" class="select select-bordered">
                   <option disabled selected value="">Please Choose Truck</option>
                   <option v-for="(truck, index) in props.trucks" :value="truck.id">{{ truck.plate_number }}</option>
                 </select>
@@ -85,7 +86,7 @@ onMounted(() => {
                 <div class="label">
                   <span class="label-text">Day</span>
                 </div>
-                <select v-model="form.day" class="select select-bordered">
+                <select disabled v-model="form.day" class="select select-bordered">
                   <option disabled selected value="">Please Choose Day</option>
                   <option selected value="monday">Monday</option>
                   <option selected value="tuesday">Tuesday</option>
@@ -102,7 +103,7 @@ onMounted(() => {
                 <div class="label">
                   <span class="label-text">Time</span>
                 </div>
-                <input type="time" v-model="form.time" class="input input-bordered" />
+                <input disabled type="time" v-model="form.time" class="input input-bordered" />
               </label>
               <span class="text-red-700" v-if="form.errors.time">{{ form.errors.time }}</span>
 
@@ -110,7 +111,7 @@ onMounted(() => {
                 <div class="label">
                   <span class="label-text">Route</span>
                 </div>
-                <select v-model="form.route" class="select select-bordered">
+                <select disabled v-model="form.route" class="select select-bordered">
                   <option disabled selected value="">Please Choose Route</option>
                   <option v-for="(_route, index) in props.routes" :value="_route.id">{{ _route.name }}</option>
                 </select>
@@ -120,8 +121,10 @@ onMounted(() => {
               <div class="flex justify-end mt-5 gap-2">
                 <Link :href="route('schedule.calendar')"
                   class="inline-flex items-center btn px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150">
-                Cancel</Link>
-                <PrimaryButton>Submit</PrimaryButton>
+                Back</Link>
+                <Link :href="route('schedule.edit', {id: props.Sched.id})"
+                  class="inline-flex items-center btn px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150">
+                Edit</Link>
               </div>
 
             </form>

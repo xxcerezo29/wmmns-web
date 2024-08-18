@@ -18,6 +18,17 @@ export interface paginated<T> {
         total: number;
 }
 
+export interface Schedule {
+    barangay: string;
+    day: string;
+    id: number;
+    route_id: number;
+    time: string;
+    truck_id: number;
+    truck: Truck;
+    route: Route;
+}
+
 export interface Driver {
     id: number;
     firstname: string;

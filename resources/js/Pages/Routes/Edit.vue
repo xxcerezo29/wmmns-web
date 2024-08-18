@@ -10,6 +10,7 @@ import PrimaryButton from "@/Components/ui/daisyUI/PrimaryButton.vue";
 
 import Map from "./Component/Map.vue";
 import MapEdit from "./Component/MapEdit.vue";
+import { useToast } from "vue-toastification";
 
 const props = defineProps<{
     _route: Route
@@ -26,8 +27,17 @@ const form = useForm({
     waypoint: [] as waypoint[]
 })
 
+const toast = useToast();
+
+
 const submit = () => {
-    form.post(route('routes.update', {id: props._route.id}));
+    form.post(route('routes.update', {id: props._route.id}), {
+        onError: () => {
+      Object.values(form.errors).forEach((error) => {
+        toast.error(error);
+      });
+    }
+    });
 }
 
 const barangay = ref<Array<ICities>>([]);

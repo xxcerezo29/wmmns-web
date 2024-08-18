@@ -6,20 +6,21 @@ import { useForm } from '@inertiajs/vue3';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import { ICities, Roles, Route, Truck } from '../types/interface';
+import { ICities, Roles, Route, Schedule, Truck } from '../types/interface';
 import axios from 'axios';
 
 const props = defineProps<{
   routes: Array<Route>;
-  trucks: Array<Truck>
+  trucks: Array<Truck>;
+  Sched: Schedule;
 }>();
 
 const form = useForm({
-  truck_id: '',
-  day: '',
-  route: '',
-  time: '',
-  barangay: usePage().props.auth.user.barangay
+  truck_id: props.Sched.truck_id,
+  day: props.Sched.day,
+  route: props.Sched.route_id,
+  time: props.Sched.time? props.Sched.time.substring(0, 5) : '',
+  barangay: props.Sched.barangay
 })
 
 const toast = useToast();
@@ -27,7 +28,7 @@ const toast = useToast();
 const barangay = ref<Array<ICities>>([]);
 
 const submit = () => {
-  form.post(route('schedule.store'), {
+  form.post(route('schedule.update', {id: props.Sched.id}), {
     onSuccess: () => {
       // toast.success(usePage().props.errors);
     },
@@ -102,7 +103,7 @@ onMounted(() => {
                 <div class="label">
                   <span class="label-text">Time</span>
                 </div>
-                <input type="time" v-model="form.time" class="input input-bordered" />
+                <input  type="time" v-model="form.time" class="input input-bordered" />
               </label>
               <span class="text-red-700" v-if="form.errors.time">{{ form.errors.time }}</span>
 

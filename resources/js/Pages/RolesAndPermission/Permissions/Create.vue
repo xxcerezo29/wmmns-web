@@ -14,6 +14,11 @@ const toast = useToast();
 
 const submit = () => {
   form.post(route('users.permissions.store'),{
+    onError: () => {
+      Object.values(form.errors).forEach((error) => {
+        toast.error(error);
+      });
+    }
   });
 }
 

@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\DriversController;
 use App\Http\Controllers\GarbageCollectionScheduleController;
-use App\Http\Controllers\GarbageCollectionScheduleController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResidentsController;
@@ -50,6 +49,10 @@ Route::middleware('auth')->group(function () {
     Route::prefix('schedule')->group(function(){
         Route::get('/', [GarbageCollectionScheduleController::class,'list'])->name('schedule.calendar');
         Route::get('/schedule-create', [GarbageCollectionScheduleController::class,'create'])->name('schedule.create');
+        Route::get('/schedule-view/{id}', [GarbageCollectionScheduleController::class,'show'])->name('schedule.show');
+        Route::get('/schedule-edit/{id}', [GarbageCollectionScheduleController::class,'edit'])->name('schedule.edit');
+        Route::post('/schedule-edit/{id}', [GarbageCollectionScheduleController::class,'update'])->name('schedule.update');
+        Route::post('/schedule-create', [GarbageCollectionScheduleController::class,'store'])->name('schedule.store');
     });
 
     Route::prefix('users')->group(function () {

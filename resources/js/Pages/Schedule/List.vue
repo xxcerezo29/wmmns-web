@@ -4,7 +4,7 @@ import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
-import { paginated } from '../types/interface';
+import { paginated, Route, Schedule, Truck } from '../types/interface';
 import { User } from '../types';
 import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue';
@@ -12,8 +12,17 @@ import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 import Modal from '@/Components/ui/daisyUI/Modal.vue';
 import Calendar from './Components/Calendar/Calendar.vue';
 
+
 const props = defineProps<{
-    users: paginated<User>
+    schedule: {
+        monday: Array<Schedule>;
+        tuesday: Array<Schedule>;
+        wednesday: Array<Schedule>;
+        thursday: Array<Schedule>;
+        friday: Array<Schedule>;
+        saturday: Array<Schedule>;
+        sunday: Array<Schedule>;
+    }
 }>();
 
 const toast = useToast();
@@ -53,7 +62,7 @@ onMounted(() => {
         </template>
 
         <div class="py-12">
-            <Calendar />
+            <Calendar :schedule="props.schedule" />
         </div>
         <Modal id="deleteModal" title="Role Delete Form">
             <template #body>

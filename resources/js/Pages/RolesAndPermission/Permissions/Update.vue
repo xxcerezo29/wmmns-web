@@ -19,6 +19,11 @@ const toast = useToast();
 
 const submit = () => {
   form.post(route('users.permissions.update', {id: props.permission.id}),{
+    onError: () => {
+      Object.values(form.errors).forEach((error) => {
+        toast.error(error);
+      });
+    }
   });
 }
 

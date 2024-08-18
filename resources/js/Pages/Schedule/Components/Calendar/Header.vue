@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import PrimaryButton from '@/Components/ui/daisyUI/PrimaryButton.vue';
+import { PlusCircleIcon } from '@heroicons/vue/24/outline';
+import { Link } from '@inertiajs/vue3';
+
 const props = defineProps<{
     month: string;
     year: string;
@@ -10,7 +14,7 @@ const props = defineProps<{
             <time datetime="2022-01">{{month}} {{year}}</time>
         </h1>
         <div class="flex items-center">
-            <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
+            <!-- <div class="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
                 <button type="button"
                     class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50">
                     <span class="sr-only">Previous month</span>
@@ -32,9 +36,9 @@ const props = defineProps<{
                             clip-rule="evenodd" />
                     </svg>
                 </button>
-            </div>
+            </div> -->
             <div class="hidden md:ml-4 md:flex md:items-center">
-                <div class="relative">
+                <!-- <div class="relative">
                     <button type="button"
                         class="flex items-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                         id="menu-button" aria-expanded="false" aria-haspopup="true">
@@ -49,7 +53,6 @@ const props = defineProps<{
                     <div class="hidden absolute right-0 z-10 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                         role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                         <div class="py-1" role="none">
-                            <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
                                 tabindex="-1" id="menu-item-0">Day view</a>
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem"
@@ -60,11 +63,9 @@ const props = defineProps<{
                                 tabindex="-1" id="menu-item-3">Year view</a>
                         </div>
                     </div>
-                </div>
-                <div class="ml-6 h-6 w-px bg-gray-300"></div>
-                <button type="button"
-                    class="ml-6 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Add
-                    Schedule</button>
+                </div> -->
+                <!-- <div class="ml-6 h-6 w-px bg-gray-300"></div> -->
+                <Link :href="route('schedule.create')" class="disabled:text-gray-500 inline-flex hover:border-transparent items-center px-4 py-3 btn bg-slate-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-kwikweb dark:hover:bg-white focus:bg-kwikweb-200 dark:focus:bg-white active:bg-kwikweb-900 dark:active:bg-gray-300 focus:outline-none focus:ring-offset-2 transition ease-in-out duration-150"><PlusCircleIcon class="h-7" />Add Schedule</Link>
             </div>
             <div class="relative ml-6 md:hidden">
                 <button type="button"

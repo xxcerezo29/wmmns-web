@@ -20,6 +20,11 @@ const barangay = ref<Array<ICities>>([]);
 
 const submit = () => {
   form.post(route('trucks.store'),{
+    onError: () => {
+            Object.values(form.errors).forEach((error) => {
+                toast.error(error);
+            });
+        }
   });
 }
 
