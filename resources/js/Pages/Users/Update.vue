@@ -29,6 +29,11 @@ const barangay = ref<Array<ICities>>([]);
 
 const submit = () => {
     form.post(route('users.all.update', { id: props.user.id }), {
+        onError: () => {
+            Object.values(form.errors).forEach((error) => {
+                toast.error(error);
+            });
+        }
     });
 
 }
