@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Driver;
 use App\Models\MobileUser;
 use App\Models\Resident;
+use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,9 +31,9 @@ class AuthenticatedSessionController extends Controller
         ]);
 
         if($request->type === 'resident')
-            $user = Resident::where('email', $request->email)->first();
+            $user = Resident::where('email', $request->email)->firstOrFail();
         else if($request->type === 'driver')
-            $user = Driver::where('email', $request->email)->first();
+            $user = Driver::where('email', $request->email)->firstOrFail();
 
         if(Hash::check($request->password, $user->password)){
             Auth::login($user);
@@ -42,14 +43,15 @@ class AuthenticatedSessionController extends Controller
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'Bearer',
+                'user' => $user,
             ]);
         }else{
             return response()->json(['message'=> 'Invalid credentials'], 401);
         }
     }
 
-    public function user($token){
-
+    public function user(Request $request){
+        
     }
 
     /**

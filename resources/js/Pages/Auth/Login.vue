@@ -31,7 +31,7 @@ const submit = () => {
 
 <template>
     <Head title="Log in" />
-    <div class="min-he screen bg-no-repeat bg-cover bg-center" style="background-image: url('/garbage-truck.png')">
+    <div class="min-h-screen bg-no-repeat bg-cover bg-center" style="background-image: url('/garbage-truck.png')">
         <div class="flex justify-end">
             <div class="bg-white min-h-screen w-1/2 flex justify-center items-center">
                 <div>
