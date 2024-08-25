@@ -11,6 +11,7 @@ import { onMounted, ref } from 'vue';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 import Modal from '@/Components/ui/daisyUI/Modal.vue';
 import { hasRole } from '@/functions';
+import LinkButton from '@/Components/ui/daisyUI/LinkButton.vue';
 
 const props = defineProps<{
     trucks: paginated<Truck>
@@ -53,7 +54,11 @@ onMounted(()=> {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-                <Link :href="route('trucks.create')" class="disabled:text-gray-500 inline-flex hover:border-transparent items-center px-4 py-3 btn bg-slate-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-kwikweb dark:hover:bg-white focus:bg-kwikweb-200 dark:focus:bg-white active:bg-kwikweb-900 dark:active:bg-gray-300 focus:outline-none focus:ring-offset-2 transition ease-in-out duration-150"><PlusCircleIcon class="h-7" />Add Truck</Link>
+                <LinkButton :href="route('trucks.create')" label="Add Truck">
+                    <template #icon>
+                        <PlusCircleIcon class="h-7" />
+                    </template>
+                </LinkButton>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5">
                     <div class="p-6 text-gray-900">
                         <div class="overflow-x-auto">
@@ -73,7 +78,11 @@ onMounted(()=> {
                                         <td>{{ truck.barangay }}</td>
                                         <td>
                                             <div class="flex gap-2">
-                                                <Link class="inline-flex items-center btn px-4 py-3 text-white bg-green-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-green-400 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150" :href="route('trucks.edit', {id: truck.id})"><PencilIcon class="h-4" /></Link>
+                                                <LinkButton class="!bg-green-600" :href="route('trucks.edit', {id: truck.id})" label="">
+                                                    <template #icon>
+                                                        <PencilIcon class="h-4" />
+                                                    </template>
+                                                </LinkButton>
                                                 <SecondaryButton @click="targetToDelete = truck.id" onclick="deleteModal.showModal()" class="!bg-red-600 text-white"> <TrashIcon class="h-4" /> </SecondaryButton>
                                             </div>
                                         </td>

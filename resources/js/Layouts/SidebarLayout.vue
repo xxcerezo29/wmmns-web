@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { Bars3Icon, BuildingStorefrontIcon, HomeIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
+import { Bars3Icon, BuildingStorefrontIcon, CalendarDaysIcon, HomeIcon, MapIcon, TruckIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
 import MenuItem from '@/Components/ui/MenuItem.vue';
 import MenuItemDropdown from '@/Components/ui/MenuItemDropdown.vue';
 import { hasRole } from '@/functions';
@@ -66,7 +66,7 @@ const closeSidebar = () => {
                 </MenuItem>
                 <MenuItem pattern="trucks" routeName="trucks.list" label="Trucks">
                     <template #menuIcon>
-                        <HomeIcon class="h-6" />
+                        <TruckIcon class="h-6" />
                     </template>
                 </MenuItem>
                 <MenuItemDropdown label="Users" pattern="users">
@@ -81,13 +81,13 @@ const closeSidebar = () => {
                 </MenuItemDropdown>
                 <MenuItem pattern="routes" routeName="routes.list" label="Routes">
                     <template #menuIcon>
-                        <HomeIcon class="h-6" />
+                        <MapIcon class="h-6" />
                     </template>
                 </MenuItem>
                 
                 <MenuItem pattern="schedule" routeName="schedule.calendar" label="Schedules">
                     <template #menuIcon>
-                        <HomeIcon class="h-6" />
+                        <CalendarDaysIcon class="h-6" />
                     </template>
                 </MenuItem>
             </ul>

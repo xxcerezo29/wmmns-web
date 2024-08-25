@@ -73,7 +73,7 @@ onMounted(()=> {
                                         <td>
                                             <div class="flex gap-2">
                                                 <Link class="inline-flex items-center btn px-4 py-3 text-white bg-green-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-green-400 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150" :href="route('users.all.edit', {id: resident.id})"><PencilIcon class="h-4" /></Link>
-                                                <SecondaryButton :disabled="$page.props.auth.user.id === resident.id" @click="targetToDelete = resident.id" onclick="deleteModal.showModal()" class="!bg-red-600 text-white"> <TrashIcon class="h-4" /> </SecondaryButton>
+                                                <SecondaryButton @click="targetToDelete = resident.id" onclick="deleteModal.showModal()" class="!bg-red-600 text-white"> <TrashIcon class="h-4" /> </SecondaryButton>
                                             </div>
                                         </td>
                                     </tr>

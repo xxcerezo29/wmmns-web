@@ -13,4 +13,9 @@ class Truck extends Model
         'barangay',
         'plate_number',
     ];
+
+    public function schedule()
+    {
+        return $this->hasMany(CollectionSchedule::class, 'truck_id', 'id');
+    }
 }
