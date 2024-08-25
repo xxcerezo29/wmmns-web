@@ -118,3 +118,14 @@ jobs:
                 **/.git*/**
                 **/node_modules/**
                 **/vendor/**
+
+        env:
+            LOCAL_DIR: ./
+            REMOTE_DIR: /htdocs/
+
+      - name: Custom FTP Upload
+        run: |
+          lftp -u ${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }} ${{ env.FTP_HOST }} <<- EOF
+            mirror --reverse --delete --verbose ${{ env.LOCAL_DIR }} ${{ env.REMOTE_DIR }}
+            bye
+          EOF
