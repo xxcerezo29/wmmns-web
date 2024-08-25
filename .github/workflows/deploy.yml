@@ -114,7 +114,7 @@ jobs:
             username: ${{ env.FTP_USERNAME }}
             password: ${{ env.FTP_PASSWORD }}
             local-dir: ./
-            remote-dir: /htdocs/
+            server-dir: /htdocs/
             exclude: |
                 **/.git*
                 **/.git*/**
