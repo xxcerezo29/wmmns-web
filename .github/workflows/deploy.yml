@@ -113,10 +113,7 @@ jobs:
             server: ${{ env.FTP_HOST }}
             username: ${{ env.FTP_USERNAME }}
             password: ${{ env.FTP_PASSWORD }}
-            local-dir: ./
-            server-dir: /htdocs/
             exclude: |
                 **/.git*
                 **/.git*/**
                 **/node_modules/**
-                **/vendor/**
