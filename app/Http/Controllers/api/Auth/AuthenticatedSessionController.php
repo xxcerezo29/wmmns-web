@@ -36,6 +36,7 @@ class AuthenticatedSessionController extends Controller
                 'access_token' => $token,
                 'token_type' => 'Bearer',
                 'user' => $user,
+                'type' => $request->type,
             ]);
         }else{
             return response()->json(['message'=> 'Invalid credentials'], 401);

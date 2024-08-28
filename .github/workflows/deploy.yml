@@ -1,13 +1,13 @@
 name: Deploy WMMNS
 
 env:
-  FTP_HOST: ftp.infinityfree.com
-  FTP_USERNAME: if0_37174370
-  FTP_PASSWORD: wmmns2024
+  FTP_HOST: 35.240.198.68
+  FTP_USERNAME: ftp_wmmns
+  FTP_PASSWORD: '@_Cerezo0129'
   DB_CON: mysql
-  DB_USER: if0_37174370
-  DB_NAME: if0_37174370_wmmns2024
-  DB_PASS: wmmns2024
+  DB_USER: sql_wmmns
+  DB_NAME: sql_wmmns
+  DB_PASS: '@_Cerezo0129'
 
 on:
   release:
