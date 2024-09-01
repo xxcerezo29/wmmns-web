@@ -91,9 +91,11 @@ class GarbageCollectionSchedule extends Controller
     }
     public function getTrucksForToday()
     {
+        $user = Auth::user();
         $today = Carbon::now()->format('l');
 
         $schedules = CollectionSchedule::where('day', $today)
+            ->where('barangay',$user->barangay )
             ->with('truck')
             ->get();
 

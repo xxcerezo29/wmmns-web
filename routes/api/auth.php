@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\api\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\api\Auth\PasswordController;
 use App\Http\Controllers\api\Auth\RegisteredUserController;
 use App\Http\Controllers\api\Auth\VerifyEmailController;
 use App\Models\Driver;
@@ -39,6 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware('throttle:6,1');
     Route::get('verify-email', VerifyEmailController::class);
-
+    Route::post('password' , [PasswordController::class, 'update']);
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
 });
