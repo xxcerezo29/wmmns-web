@@ -62,7 +62,9 @@ class GarbageCollectionSchedule extends Controller
 
     public function getById($id)
     {
-        $schedule = CollectionSchedule::findOrFail($id);
+        $schedule = CollectionSchedule::with('truck')
+            ->with('route')
+            ->findOrFail($id);
 
         return response()->json([
             'schedules' => $schedule
@@ -116,19 +118,7 @@ class GarbageCollectionSchedule extends Controller
             $schedules = CollectionSchedule::where('barangay', $user->barangay)->where('day', $day)->where('truck_id', $user->truck_id)->with('truck')
             ->with('route')
             ->orderBy('time', 'asc')
-            ->get()
-            ->map(function ($schedule) {
-                return [
-                    'id' => $schedule->id,
-                    'barangay' => $schedule->barangay,
-                    'day' => $schedule->day,
-                    'truck_id' => $schedule->truck_id,
-                    'route_id' => $schedule->route_id,
-                    'time' => $schedule->time,
-                    'truck_plate' => $schedule->truck->plate_number ?? 'N/A', // Add truck plate number if exists
-                    'route_name' => $schedule->route->name ?? ''
-                ];
-            }); 
+            ->get();
         }else if($user instanceof Resident){
             $schedules = CollectionSchedule::where('barangay', $user->barangay)->where('day', $day)->with('truck')
             ->with('route')
