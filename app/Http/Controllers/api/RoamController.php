@@ -62,4 +62,25 @@ class RoamController extends Controller
             ], 500);
         }
     }
+
+    public function cancel ($id){
+        DB::beginTransaction();
+        try{
+            $roam = Roam::findOrFail($id);
+
+            $roam->delete();
+            DB::commit();
+
+            return response()->json([
+                'roam' => $roam,
+                'message' => 'Roaming Canceled.'
+            ], 200);
+        }catch(Exception $e){
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to cancel roam. Please try again.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    } 
 }
