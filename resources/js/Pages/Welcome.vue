@@ -94,11 +94,11 @@ onMounted(() => {
                     <div v-if="canLogin"
                         class="header-btn hidden sm:block sm:absolute sm:right-0 sm:mr-16 lg:static lg:mr-0">
                         <Link
-                            class="text-blue-600 border border-blue-600 px-10 py-3 rounded-l-full duration-300 hover:bg-blue-600 hover:text-white"
+                            class="text-blue-600 border border-blue-600 px-10 py-3 rounded-full duration-300 hover:bg-blue-600 hover:text-white"
                             :href="route('login')">Login</Link>
-                        <Link v-if="canRegister"
+                        <!-- <Link v-if="canRegister"
                             class="text-blue-600 border border-blue-600 px-10 py-3 rounded-r-full duration-300 hover:bg-blue-600 hover:text-white"
-                            :href="route('register')">Register</Link>
+                            :href="route('register')">Register</Link> -->
                     </div>
                     <div v-else class="header-btn hidden sm:block sm:absolute sm:right-0 sm:mr-16 lg:static lg:mr-0">
                         <Link v-if="$page.props.auth.user" :href="route('dashboard')"
