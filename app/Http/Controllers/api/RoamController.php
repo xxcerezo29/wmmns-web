@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Events\TrackGarbageTruck;
 use App\Http\Controllers\Controller;
 use App\Models\Roam;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class RoamController extends Controller
@@ -83,4 +85,17 @@ class RoamController extends Controller
             ], 500);
         }
     } 
+
+    public function sendLocation (Request $request){
+
+        $user = Auth::user();
+        $truck = $user->AssignedTruck;
+
+        $location = $request->input('location');
+        $barangay = $user->barangay;
+
+        event(new TrackGarbageTruck($location, $barangay, $user,$truck));
+
+        return response()->json(['status' => 'Location Sent']);
+    }
 }
