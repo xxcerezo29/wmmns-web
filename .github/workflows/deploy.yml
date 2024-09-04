@@ -35,12 +35,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          if [ -d "vendor" ]; then
-            echo "Using cached vendor directory."
-          else
             composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
             npm install
-          fi
 
       - name: Directory Permissions
         run: chmod -R 777 storage bootstrap/cache
@@ -118,4 +114,9 @@ jobs:
                 **/.git*
                 **/.git*/**
                 **/node_modules/**
+                **/vendor/**
+
+      - name: Install Composer Dependencies on Server
+        run: |
+          composer install --no-dev --optimize-autoloader
             
