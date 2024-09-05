@@ -12,7 +12,7 @@ env:
   DB_USER_2: u308695494_wmmns
   DB_NAME_2: u308695494_wmmns
   DB_PASS_2: Wmmns2024
-  FTP_HOST_2: ftp://nc-cit.org
+  FTP_HOST_2: nc-cit.org
   FTP_USERNAME_2: u308695494.bsit3a-pki.online
   FTP_PASSWORD_2: Wmmns2024
 
