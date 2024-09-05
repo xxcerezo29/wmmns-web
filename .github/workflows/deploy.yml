@@ -186,6 +186,7 @@ jobs:
               **/.git*
               **/.git*/**
               **/node_modules/**
+              **/vendor/**
 
       - name: Install Composer Dependencies on Server
         run: |
