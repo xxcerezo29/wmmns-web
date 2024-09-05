@@ -8,6 +8,13 @@ env:
   DB_USER: sql_wmmns
   DB_NAME: sql_wmmns
   DB_PASS: '@_Cerezo0129'
+  DB_CON_2: mysql
+  DB_USER_2: u308695494_wmmns
+  DB_NAME_2: u308695494_wmmns
+  DB_PASS_2: Wmmns2024
+  FTP_HOST_2: ftp://nc-cit.org
+  FTP_USERNAME_2: u308695494.bsit3a-pki.online
+  FTP_PASSWORD_2: Wmmns2024
 
 on:
   release:
@@ -119,4 +126,67 @@ jobs:
       - name: Install Composer Dependencies on Server
         run: |
           composer install --no-dev --optimize-autoloader
-            
+     
+  deploy-to-hostinger:
+    runs-on: ubuntu-latest
+    needs: prepare-build
+    
+    steps:
+      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+        with:
+          php-version: "8.2"
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Restore composer packages
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+      
+      - name: Create .env File
+        run: cp .env.example .env
+      
+      - name: Generate Laravel Key
+        env:
+            DB_CONNECTION: sqlite
+            DB_DATABASE: database/database.sqlite
+        run: |
+          touch database/database.sqlite
+          sleep 2
+          php artisan key:generate
+
+      - name: Build Vue
+        run: |
+            npm install
+            npm run build
+
+      - name: Remove node_module
+        run: rm -rf node_modules
+
+      - name: Update Database connection from .env
+        run: |
+          sed -i "s/DB_CONNECTION=.*/DB_CONNECTION=${DB_CON_2}/" .env
+          sed -i "s/DB_DATABASE=.*/DB_DATABASE=${DB_NAME_2}/" .env
+          sed -i "s/DB_USERNAME=.*/DB_USERNAME=${DB_USER_2}/" .env
+          sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=${DB_PASS_2}/" .env
+
+      - name: Upload to Server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ env.FTP_HOST_2 }}
+          username: ${{ env.FTP_USERNAME_2 }}
+          password: ${{ env.FTP_PASSWORD_2 }}
+          local-dir: ./
+          server-dir: /public_html
+          exclude: |
+              **/.git*
+              **/.git*/**
+              **/node_modules/**
+
+      - name: Install Composer Dependencies on Server
+        run: |
+          composer install --no-dev --optimize-autoloader
