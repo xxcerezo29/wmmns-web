@@ -35,7 +35,7 @@ class TrackGarbageTruck implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel($this->barangay.'-track-garbage-truck'),
+            new Channel($this->barangay.'-track-garbage-truck'),
         ];
     }
 

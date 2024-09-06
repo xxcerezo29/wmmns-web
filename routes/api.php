@@ -1,7 +1,12 @@
-<?php 
+<?php
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/api/auth.php';
 require __DIR__.'/api/text.php';
 require __DIR__.'/api/schedule.php';
 require __DIR__.'/api/user.php';
 require __DIR__.'/api/roam.php';
+
