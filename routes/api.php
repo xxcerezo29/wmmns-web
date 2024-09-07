@@ -9,4 +9,5 @@ require __DIR__.'/api/text.php';
 require __DIR__.'/api/schedule.php';
 require __DIR__.'/api/user.php';
 require __DIR__.'/api/roam.php';
+require __DIR__.'/api/complaint.php';
 

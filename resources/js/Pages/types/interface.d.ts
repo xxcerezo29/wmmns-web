@@ -84,3 +84,19 @@ export interface ICities {
     name: string,
     regionCode: string,
 }
+
+export interface IComplaint {
+    id: number;
+    reference_number: string;
+    resident_id: number;
+    schedule_id: number;
+    report_type: string;
+    location: string;
+    barangay: string;
+    description: string;
+    status: string;
+    photo_url: string;
+    resolved_at: string;
+    resident: Resident;
+    schedule: Schedule;
+}
