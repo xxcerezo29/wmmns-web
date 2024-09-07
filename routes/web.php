@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ComplaintsController;
 use App\Http\Controllers\DriversController;
 use App\Http\Controllers\GarbageCollectionScheduleController;
 use App\Http\Controllers\PermissionsController;
@@ -95,8 +96,14 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-
-
+    Route::prefix('complaints')->group(function(){
+        Route::get('/', [ComplaintsController::class, 'list'])->name('complaints.list');
+        Route::get('/view/{reference_number}', [ComplaintsController::class, 'view'])->name('complaints.view');
+        // Route::post('/update/{reference_number}', [ComplaintsController::class, 'update_status'])->name('complaints.update');
+        Route::get('/reviewed/{id}', [ComplaintsController::class, 'reviewed'])->name('complaints.reviewed');
+        Route::get('/resolved/{id}', [ComplaintsController::class, 'resolved'])->name('complaints.resolved');
+        Route::get('/closed/{id}', [ComplaintsController::class, 'closed'])->name('complaints.closed');
+    });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
