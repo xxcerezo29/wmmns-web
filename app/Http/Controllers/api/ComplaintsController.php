@@ -18,12 +18,20 @@ class ComplaintsController extends Controller
             'schedule_id' => 'required_if:report_type,missed_collection|exists:collection_schedules,id',
             'location' => 'required_if:report_type,illegal_dumping|string',
             'description' => 'required|string',
-            'photo_url' => 'nullable|url',
-            'resolved_at' => 'nullable|date'
+            'photo_url.*' => 'nullable|image|max:2048'
         ]);
 
         DB::beginTransaction();
         try {
+
+            $photoUrls = [];
+            if ($request->hasFile('photo_urls')) {
+                foreach ($request->file('photo_urls') as $file) {
+                    $path = $file->store('public/photos'); // Store the photo
+                    $photoUrls[] = $path;
+                }
+            }
+
             $report = Report::create([
                 'reference_number' => 'RPT-' . strtoupper(uniqid()),
                 'resident_id' => Auth::user()->id,
@@ -33,8 +41,7 @@ class ComplaintsController extends Controller
                 'barangay' => Auth::user()->barangay,
                 'description' => $request->description,
                 'status' => 'pending',
-                'photo_url' => $request->photo_url,
-                'resolved_at' => $request->resolved_at
+                'photo_urls' => json_encode($photoUrls),
             ]);
 
             DB::commit();
@@ -44,8 +51,6 @@ class ComplaintsController extends Controller
                 'message' => 'Complaint filed successfully.',
                 'data' => $report
             ], 201);
-
-
         } catch (Exception $e) {
             DB::rollBack();
 
@@ -66,7 +71,6 @@ class ComplaintsController extends Controller
                 'success' => true,
                 'report' => $report
             ], 200);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -74,6 +78,27 @@ class ComplaintsController extends Controller
                 'message' => 'Report not found.',
                 'error' => $e->getMessage()
             ], 404);
+        }
+    }
+
+    public function list()
+    {
+        try {
+            $resident = Auth::user(); // Ensure the resident is authenticated
+
+            $reports = Report::where('resident_id', $resident->id)->paginate(10);
+
+            return response()->json([
+                'success' => true,
+                'reports' => $reports
+            ], 200);
+        } catch (Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve reports.',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }

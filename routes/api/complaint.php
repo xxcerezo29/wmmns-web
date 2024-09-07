@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('complaints')->group(function () {
-        Route::post('/create' , [ComplaintsController::class, 'store']);
+        Route::post('/file/store' , [ComplaintsController::class, 'store']);
         Route::get('/show/{reference_number}', [ComplaintsController::class, 'show']);
+        Route::get('/', [ComplaintsController::class, 'list']);
     });
 });
