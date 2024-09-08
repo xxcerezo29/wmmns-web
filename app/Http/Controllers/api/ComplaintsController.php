@@ -15,7 +15,11 @@ class ComplaintsController extends Controller
     {
         $request->validate([
             'report_type' => 'required|in:missed_collection,illegal_dumping',
-            'schedule_id' => 'required_if:report_type,missed_collection|exists:collection_schedules,id',
+            'schedule_id' => [
+                'nullable',
+                'required_if:report_type,missed_collection',
+                'exists:collection_schedules,id'
+            ],
             'location' => 'required_if:report_type,illegal_dumping|string',
             'description' => 'required|string',
             'photo_url.*' => 'nullable|image|max:2048'
@@ -27,7 +31,7 @@ class ComplaintsController extends Controller
             $photoUrls = [];
             if ($request->hasFile('photo_urls')) {
                 foreach ($request->file('photo_urls') as $file) {
-                    $path = $file->store('public/photos'); // Store the photo
+                    $path = $file->store('complaints/photos', 'public'); // Store the photo
                     $photoUrls[] = $path;
                 }
             }
@@ -35,13 +39,13 @@ class ComplaintsController extends Controller
             $report = Report::create([
                 'reference_number' => 'RPT-' . strtoupper(uniqid()),
                 'resident_id' => Auth::user()->id,
-                'schedule_id' => $request->schedule_id,
+                'schedule_id' => $request->schedule_id ?? null,
                 'report_type' => $request->report_type,
                 'location' => $request->location,
                 'barangay' => Auth::user()->barangay,
                 'description' => $request->description,
                 'status' => 'pending',
-                'photo_urls' => json_encode($photoUrls),
+                'photo_url' => json_encode($photoUrls),
             ]);
 
             DB::commit();
