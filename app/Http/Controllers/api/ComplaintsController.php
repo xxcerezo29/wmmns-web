@@ -69,7 +69,7 @@ class ComplaintsController extends Controller
     public function show($reference_number)
     {
         try {
-            $report = Report::where('reference_number', $reference_number)->firstOrFail();
+            $report = Report::with('resident')->with('schedule')->where('reference_number', $reference_number)->firstOrFail();
 
             return response()->json([
                 'success' => true,
@@ -79,7 +79,7 @@ class ComplaintsController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Report not found.',
+                'message' => 'Complaint not found.',
                 'error' => $e->getMessage()
             ], 404);
         }
@@ -90,7 +90,10 @@ class ComplaintsController extends Controller
         try {
             $resident = Auth::user(); // Ensure the resident is authenticated
 
-            $reports = Report::where('resident_id', $resident->id)->paginate(10);
+            $reports = Report::where('resident_id', $resident->id)
+                    ->orderByRaw("CASE WHEN status = 'pending' THEN 0 ELSE 1 END")
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10);
 
             return response()->json([
                 'success' => true,
