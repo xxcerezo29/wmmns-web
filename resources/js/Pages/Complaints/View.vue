@@ -3,6 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { IComplaint } from '../types/interface';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
+import { ref } from 'vue';
 
 const props = defineProps<{
     complaint: IComplaint
@@ -14,7 +15,11 @@ const formatReportType = (type: string) => {
 
 const form = useForm({});
 
+const selectedImage = ref('');
 
+const selectImage = (image: string)  => {
+    selectedImage.value = image;
+} 
 
 const reviewed_submit = () => {
     form.get(route('complaints.reviewed', {id: props.complaint.id}));
@@ -101,15 +106,18 @@ const closed_submit = () => {
                                 </dt>
                                 <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                     <div  v-if="complaint.photo_url"  class="grid gap-4">
-                                        <div>
+                                        <div v-if="selectedImage">
                                             <img class="h-auto w-full max-w-full rounded-lg object-cover object-center md:h-[480px]"
-                                                src="https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1470&amp;q=80"
+                                                :src="'/storage/'+selectedImage"
                                                 alt="" />
                                         </div>
+                                        <div v-else>
+                                            Click an  Image to Enlarge.
+                                        </div>
                                         <div class="grid grid-cols-5 gap-4">
-                                            <div>
+                                            <div @click="selectImage(image)" v-for="(image, index) in JSON.parse(complaint.photo_url)" :key="index">
                                                 <img
-                                                  src="https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?ixlib=rb-4.0.3&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1470&amp;q=80"
+                                                  :src="'/storage/'+image"
                                                   class="object-cover object-center h-20 max-w-full rounded-lg cursor-pointer" alt="gallery-image" />
                                               </div>
                                         </div>
