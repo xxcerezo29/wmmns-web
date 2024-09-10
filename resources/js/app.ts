@@ -34,7 +34,7 @@ createInertiaApp({
             draggable: true,
             draggablePercent: 0.6,
         };
-        app.use(plugin).use(ZiggyVue).use(Toast, options).mount(el);
+        app.use(plugin).use(Toast, options).use(ZiggyVue).mount(el);
     },
     progress: {
         color: "#4B5563",

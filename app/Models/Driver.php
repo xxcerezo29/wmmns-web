@@ -30,4 +30,9 @@ class Driver extends Authenticatable
     public function AssignedTruck (){
         return $this->hasOne(Truck::class, 'id', 'truck_id');
     }
+
+    public function devices()
+    {
+        return $this->hasMany(Devices::class, 'driver_id', 'id');
+    }
 }
