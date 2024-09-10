@@ -37,4 +37,9 @@ class Resident extends Authenticatable
             'email_verified_at' => 'datetime',
         ];
     }
+
+    public function devices()
+    {
+        return $this->hasMany(Devices::class, 'resident_id', 'id');
+    }
 }
