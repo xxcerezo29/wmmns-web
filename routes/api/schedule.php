@@ -12,5 +12,6 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('get-by-truck/{id}', [GarbageCollectionSchedule::class,'getByTruck']);
         Route::get('get-by-day/{day}', [GarbageCollectionSchedule::class,'getByDay']);
         Route::get('get-trucks-today', [GarbageCollectionSchedule::class, 'getTrucksForToday']);
+        Route::get('/list', [GarbageCollectionSchedule::class, 'list']);
     });
 });
