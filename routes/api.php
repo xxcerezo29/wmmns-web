@@ -39,17 +39,17 @@ Route::post('/store/device', function(Request $request){
             if($user instanceof Driver){
                 Devices::create([
                     'driver_id' => $user->id,
-                    'token' => $request->token->value
+                    'token' => $request->token
                 ]);
             }else if($user instanceof Resident){
                 Devices::create([
                     'resident_id' => $user->id,
-                    'token' => $request->token->value
+                    'token' => $request->token
                 ]);
             }else if($user instanceof User){
                 Devices::create([
                     'user_id' => $user->id,
-                    'token' => $request->token->value
+                    'token' => $request->token
                 ]);
             }
 
