@@ -8,6 +8,7 @@ use App\Models\Driver;
 use App\Models\Resident;
 use App\Models\Truck;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -147,5 +148,26 @@ class GarbageCollectionSchedule extends Controller
         return response()->json([
             'schedules' => $schedules
         ]);
+    }
+
+    public function list()
+    {
+        try{
+            $resident = Auth::user();
+
+            $schedules = CollectionSchedule::where('barangay', $resident->barangay)->with('truck')->with('route')->get();
+
+            return response()->json([
+                'success' => true,
+                'schedules' => $schedules
+            ]);
+        }catch (Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to retrieve reports.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

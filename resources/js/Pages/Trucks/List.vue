@@ -1,7 +1,7 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
@@ -10,7 +10,6 @@ import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 import Modal from '@/Components/ui/daisyUI/Modal.vue';
-import { hasRole } from '@/functions';
 import LinkButton from '@/Components/ui/daisyUI/LinkButton.vue';
 
 const props = defineProps<{
