@@ -91,7 +91,8 @@ class ComplaintsController extends Controller
         try{
 
             $complaint->update([
-                'status'=> 'resolved'
+                'status'=> 'resolved',
+                'resolved_at' => today(),
             ]);
 
             DB::commit();

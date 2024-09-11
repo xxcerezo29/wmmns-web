@@ -149,4 +149,74 @@ class ReportRepository
     {
         return Cache::get("complaints_count_{$status}", 0);
     }
+
+    /**
+     * Get the reports count for each day or month for the chart, including resolved and unresolved statuses.
+     *
+     * @param string $period ('day', 'month')
+     * @param int $range Number of days or months to include (e.g., 7 for days, 12 for months)
+     * @return array
+     */
+    public function getReportsChartData($period = 'day', $range = 7)
+    {
+        $labels = [];
+        $resolvedData = [];
+        $unresolvedData = [];
+
+        // Define date ranges based on the period
+        if ($period === 'day') {
+            // For daily reports (last $range days)
+            for ($i = $range - 1; $i >= 0; $i--) {
+                $date = Carbon::now()->subDays($i);
+                $labels[] = $date->format('d M Y'); // e.g., "12 Sep 2024"
+                
+                // Get the count for resolved reports (where resolved_at is on the given date)
+                $resolvedData[] = Report::whereDate('resolved_at', $date->format('Y-m-d'))
+                                        ->count();
+
+                // Get the count for unresolved reports (where resolved_at is null and created_at is the same day)
+                $unresolvedData[] = Report::whereDate('created_at', $date->format('Y-m-d'))
+                                          ->whereNull('resolved_at')
+                                          ->count();
+            }
+        } elseif ($period === 'month') {
+            // For monthly reports (last $range months)
+            for ($i = $range - 1; $i >= 0; $i--) {
+                $month = Carbon::now()->subMonths($i);
+                $labels[] = $month->format('F Y'); // e.g., "September 2024"
+                
+                // Get the count for resolved reports (where resolved_at is in the given month)
+                $resolvedData[] = Report::whereYear('resolved_at', $month->year)
+                                        ->whereMonth('resolved_at', $month->month)
+                                        ->count();
+
+                // Get the count for unresolved reports (where resolved_at is null and created_at is in the same month)
+                $unresolvedData[] = Report::whereYear('created_at', $month->year)
+                                          ->whereMonth('created_at', $month->month)
+                                          ->whereNull('resolved_at')
+                                          ->count();
+            }
+        }
+
+        // Return the data in the format expected by Chart.js
+        return [
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => 'Resolved Reports',
+                    'data' => $resolvedData,
+                    'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
+                    'borderColor' => 'rgba(54, 162, 235, 1)',
+                    'borderWidth' => 1,
+                ],
+                [
+                    'label' => 'Unresolved Reports',
+                    'data' => $unresolvedData,
+                    'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
+                    'borderColor' => 'rgba(255, 99, 132, 1)',
+                    'borderWidth' => 1,
+                ],
+            ]
+        ];
+    }
 }

@@ -25,6 +25,7 @@ class DashboardController extends Controller
         $complaintPendingSummary = $this->reportRepository->getComplaintsSummaryByType('pending','month');
         $complaintReviewedSummary = $this->reportRepository->getComplaintsSummaryByType('reviewed','month');
         $complaintResolevedSummary = $this->reportRepository->getComplaintsSummaryByType('resolved','month');
+        $complaintChartData = $this->reportRepository->getReportsChartData('day');
         $roamSummary = $this->roamRepository->getRoamsSummary('day');
         $users = [
             'label' => 'Users',
@@ -41,7 +42,8 @@ class DashboardController extends Controller
                     $complaintPendingSummary,
                     $complaintReviewedSummary,
                     $complaintResolevedSummary
-                ]
+                ],
+                'complaintChartData' => $complaintChartData
             ]
         );
     }

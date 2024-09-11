@@ -48,6 +48,18 @@ export interface Route{
     waypoint: string;
 }
 
+export interface IChartData {
+    labels: Array<string>; // Corrected to 'labels'
+    datasets: Array<{
+        label: string;
+        data: Array<number>;
+        backgroundColor: string | Array<string>;
+        borderColor?: string | Array<string>;
+        borderWidth?: number;
+    }>
+}
+
+
 export interface Truck {
     id: number;
     barangay: string;
