@@ -88,23 +88,26 @@ onMounted(() => {
                             <li class="nav-item">
                                 <a href="#system-feature" class="page-scroll">System Feature</a>
                             </li>
-                            
+
                         </ul>
                     </div>
                     <div v-if="canLogin"
                         class="header-btn hidden sm:block sm:absolute sm:right-0 sm:mr-16 lg:static lg:mr-0">
-                        <Link
+                        <Link  v-if="!$page.props.auth.user"
                             class="text-blue-600 border border-blue-600 px-10 py-3 rounded-full duration-300 hover:bg-blue-600 hover:text-white"
                             :href="route('login')">Login</Link>
+                        <Link v-else :href="route('dashboard')"
+                            class="text-blue-600 border border-blue-600 px-10 py-3 rounded-full duration-300 hover:bg-blue-600 hover:text-white">
+                        Dashboard</Link>
                         <!-- <Link v-if="canRegister"
                             class="text-blue-600 border border-blue-600 px-10 py-3 rounded-r-full duration-300 hover:bg-blue-600 hover:text-white"
                             :href="route('register')">Register</Link> -->
                     </div>
-                    <div v-else class="header-btn hidden sm:block sm:absolute sm:right-0 sm:mr-16 lg:static lg:mr-0">
+                    <!-- <div v-else class="header-btn hidden sm:block sm:absolute sm:right-0 sm:mr-16 lg:static lg:mr-0">
                         <Link v-if="$page.props.auth.user" :href="route('dashboard')"
                             class="text-blue-600 border border-blue-600 px-10 py-3 rounded-full duration-300 hover:bg-blue-600 hover:text-white">
                         Dashboard</Link>
-                    </div>
+                    </div> -->
 
                 </nav>
             </div>
@@ -136,55 +139,60 @@ onMounted(() => {
                     <div class="m-4 wow fadeInRight" data-wow-delay="0.3s">
                         <div class="icon text-5xl">
                             <i class="lni lni-cog"></i>
-                          </div>
-                          <div>
+                        </div>
+                        <div>
                             <h3 class="service-title">Centralized Waste Management</h3>
-                            <p class="text-gray-600">The system provided a centralized system that will efficiently manage and process waste collection to disposal, ensuring a cleaner environment.</p>
-                          </div>
+                            <p class="text-gray-600">The system provided a centralized system that will efficiently
+                                manage and process waste collection to disposal, ensuring a cleaner environment.</p>
+                        </div>
                     </div>
                 </div>
                 <div class="w-full sm:w-1/2 md:w-1/2 lg:w-1/3">
                     <div class="m-4 wow fadeInRight" data-wow-delay="0.3s">
                         <div class="icon text-5xl">
                             <i class="lni lni-cog"></i>
-                          </div>
-                          <div>
+                        </div>
+                        <div>
                             <h3 class="service-title">Truck Monitoring</h3>
-                            <p class="text-gray-600">monitoring garbage truck routes ensuring proper designation of routes and schedules.</p>
-                          </div>
+                            <p class="text-gray-600">monitoring garbage truck routes ensuring proper designation of
+                                routes and schedules.</p>
+                        </div>
                     </div>
                 </div>
                 <div class="w-full sm:w-1/2 md:w-1/2 lg:w-1/3">
                     <div class="m-4 wow fadeInRight" data-wow-delay="0.3s">
                         <div class="icon text-5xl">
                             <i class="lni lni-cog"></i>
-                          </div>
-                          <div>
+                        </div>
+                        <div>
                             <h3 class="service-title">Reporting</h3>
-                            <p class="text-gray-600">The system provides a real-time updates and reports on the status of waste collection.</p>
-                          </div>
+                            <p class="text-gray-600">The system provides a real-time updates and reports on the status
+                                of waste collection.</p>
+                        </div>
                     </div>
                 </div>
                 <div class="w-full sm:w-1/2 md:w-1/2 lg:w-1/3">
                     <div class="m-4 wow fadeInRight" data-wow-delay="0.3s">
                         <div class="icon text-5xl">
                             <i class="lni lni-cog"></i>
-                          </div>
-                          <div>
+                        </div>
+                        <div>
                             <h3 class="service-title">Spatial Mapping</h3>
-                            <p class="text-gray-600">The system also has a spatial mapping that will determine the density of the residents’ complaints on that barangay. </p>
-                          </div>
+                            <p class="text-gray-600">The system also has a spatial mapping that will determine the
+                                density of the residents’ complaints on that barangay. </p>
+                        </div>
                     </div>
                 </div>
                 <div class="w-full sm:w-1/2 md:w-1/2 lg:w-1/3">
                     <div class="m-4 wow fadeInRight" data-wow-delay="0.3s">
                         <div class="icon text-5xl">
                             <i class="lni lni-cog"></i>
-                          </div>
-                          <div>
+                        </div>
+                        <div>
                             <h3 class="service-title">Mobile Application Notification</h3>
-                            <p class="text-gray-600">The system will also have a notification feature whenever there’s a schedule of garbage collection on their barangays.</p>
-                          </div>
+                            <p class="text-gray-600">The system will also have a notification feature whenever there’s a
+                                schedule of garbage collection on their barangays.</p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -94,7 +94,7 @@ const submit = () => {
                             </div>
                         </div>
                     </form>
-                    <p class="mt-8"> Dont have an account? <span class="cursor-pointer text-sm text-blue-600"> <Link :href="route('register')">Create now.</Link> </span></p>
+                    <!-- <p class="mt-8"> Dont have an account? <span class="cursor-pointer text-sm text-blue-600"> <Link :href="route('register')">Create now.</Link> </span></p> -->
                 </div>
             </div>
         </div>
