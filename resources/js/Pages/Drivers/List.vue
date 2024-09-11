@@ -1,9 +1,9 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { EyeIcon, PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
 import { Driver, paginated } from '../types/interface';
 import { useToast } from 'vue-toastification';
@@ -11,6 +11,8 @@ import { onMounted, ref } from 'vue';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 import Modal from '@/Components/ui/daisyUI/Modal.vue';
 import { hasRole } from '@/functions';
+import Pagination from '@/Components/ui/daisyUI/Pagination.vue';
+import LinkButton from '@/Components/ui/daisyUI/LinkButton.vue';
 
 const props = defineProps<{
     drivers: paginated<Driver>
@@ -31,6 +33,20 @@ const handleDelete = () => {
         }
     })
 }
+const searchTerm = ref("");
+
+const search = () => {
+    router.get(
+        route("users.drivers.list"),
+        {
+            searchTerm: searchTerm.value,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+        }
+    );
+};
 
 
 onMounted(()=> {
@@ -52,7 +68,18 @@ onMounted(()=> {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-                <Link v-if="hasRole('barangay')" :href="route('users.drivers.create')" class="disabled:text-gray-500 inline-flex hover:border-transparent items-center px-4 py-3 btn bg-slate-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-kwikweb dark:hover:bg-white focus:bg-kwikweb-200 dark:focus:bg-white active:bg-kwikweb-900 dark:active:bg-gray-300 focus:outline-none focus:ring-offset-2 transition ease-in-out duration-150"><PlusCircleIcon class="h-7" />Add Driver</Link>
+                <div class="flex flex-row gap-2 justify-end mb-2">
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            class="input input-bordered w-full max-w-xs"
+                            @keyup="search"
+                            v-model="searchTerm"
+                        />
+                    </div>
+                    <Link v-if="hasRole('barangay')" :href="route('users.drivers.create')" class="disabled:text-gray-500 inline-flex hover:border-transparent items-center px-4 py-3 btn bg-slate-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-kwikweb dark:hover:bg-white focus:bg-kwikweb-200 dark:focus:bg-white active:bg-kwikweb-900 dark:active:bg-gray-300 focus:outline-none focus:ring-offset-2 transition ease-in-out duration-150"><PlusCircleIcon class="h-7" />Add Driver</Link>
+                </div>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5">
                     <div class="p-6 text-gray-900">
                         <div class="overflow-x-auto">
@@ -77,12 +104,18 @@ onMounted(()=> {
                                         <td>
                                             <div class="flex gap-2">
                                                 <Link class="inline-flex items-center btn px-4 py-3 text-white bg-green-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-green-400 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150" :href="route('users.drivers.edit', {id: driver.id})"><PencilIcon class="h-4" /></Link>
+                                                <LinkButton class="!bg-blue-600" :href="route('users.drivers.show', {id: driver.id})" label="">
+                                                    <template #icon>
+                                                        <EyeIcon class="h-4" />
+                                                    </template>
+                                                </LinkButton>
                                                 <SecondaryButton @click="targetToDelete = driver.id" onclick="deleteModal.showModal()" class="!bg-red-600 text-white"> <TrashIcon class="h-4" /> </SecondaryButton>
                                             </div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
+                            <Pagination :paginate="props.drivers" />
                         </div>
                     </div>
                 </div>

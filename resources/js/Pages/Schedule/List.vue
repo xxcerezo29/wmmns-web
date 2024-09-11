@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
-import { paginated, Route, Schedule, Truck } from '../types/interface';
-import { User } from '../types';
+import { Schedule } from '../types/interface';
 import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue';
-import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 import Modal from '@/Components/ui/daisyUI/Modal.vue';
 import Calendar from './Components/Calendar/Calendar.vue';
+import Pagination from '@/Components/ui/daisyUI/Pagination.vue';
 
 
 const props = defineProps<{
@@ -22,6 +20,12 @@ const props = defineProps<{
         friday: Array<Schedule>;
         saturday: Array<Schedule>;
         sunday: Array<Schedule>;
+    };
+    pagination: {
+        current_page : number;
+        last_page: number;
+        next_page_url: string;
+        prev_page_url: string;
     }
 }>();
 
@@ -62,7 +66,8 @@ onMounted(() => {
         </template>
 
         <div class="py-12">
-            <Calendar :schedule="props.schedule" />
+            <Calendar :pagination="pagination" :schedule="props.schedule" />
+            <Pagination :paginate="pagination" />
         </div>
         <Modal id="deleteModal" title="Role Delete Form">
             <template #body>

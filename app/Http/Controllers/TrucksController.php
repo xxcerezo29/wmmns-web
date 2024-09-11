@@ -11,24 +11,44 @@ use Inertia\Inertia;
 
 class TrucksController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
         $user = Auth::user();
         if ($user->hasRole('admin'))
-            $trucks = Truck::paginate(10);
+            $trucks = Truck::when($request->searchTerm, function ($query, $searchTerm) {
+                return $query->where('plate_number', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+            })->paginate(10);
         else
-            $trucks = Truck::where('barangay', $user->barangay)->paginate(10);
-        
-            return Inertia::render('Trucks/List', [
-                'trucks' => $trucks
-            ]);
+            $trucks = Truck::when($request->searchTerm, function ($query, $searchTerm) {
+                return $query->where('plate_number', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+            })->where('barangay', $user->barangay)->paginate(10)->withQueryString();
+
+        return Inertia::render('Trucks/List', [
+            'trucks' => $trucks
+        ]);
     }
 
-    public function create(){
+    public function show($id)
+    {
+        $truck = Truck::with('driver')->findOrFail($id);
+        try {
+            return Inertia::render('Trucks/View', [
+                'truck' => $truck
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
+    }
+
+    public function create()
+    {
         return Inertia::render('Trucks/Create');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $truck = Truck::findOrFail($id);
 
         return Inertia::render('Trucks/Update', [
@@ -36,7 +56,8 @@ class TrucksController extends Controller
         ]);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $request->validate([
             'plate_number' => 'required|string|max:255',
             'barangay' => 'required|string|max:255',
@@ -44,7 +65,7 @@ class TrucksController extends Controller
 
         DB::beginTransaction();
 
-        try{
+        try {
             Truck::create([
                 'plate_number' => $request->plate_number,
                 'barangay' => $request->barangay,
@@ -52,8 +73,8 @@ class TrucksController extends Controller
 
             DB::commit();
 
-            return redirect(route('trucks.list'))->with(['message' => 'New Truck Added.', 'status'=> 'success']);
-        }catch(Exception $e){
+            return redirect(route('trucks.list'))->with(['message' => 'New Truck Added.', 'status' => 'success']);
+        } catch (Exception $e) {
 
             DB::rollBack();
 
@@ -61,17 +82,18 @@ class TrucksController extends Controller
         }
     }
 
-    public function destroy ($id){
+    public function destroy($id)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $truck = Truck::findOrFail($id);
 
             $truck->delete();
 
             DB::commit();
 
-            return redirect(route('trucks.list'))->with(['message' => 'Truck Deleted.', 'status'=> 'success']);
-        }catch(Exception $e){
+            return redirect(route('trucks.list'))->with(['message' => 'Truck Deleted.', 'status' => 'success']);
+        } catch (Exception $e) {
 
             DB::rollBack();
 

@@ -52,6 +52,7 @@ export interface Truck {
     id: number;
     barangay: string;
     plate_number: string;
+    driver: Driver;
 }
 
 export interface Resident{
@@ -66,6 +67,7 @@ export interface Resident{
     province: string;
     country: string;
     email: string;
+    email_verified_at: string;
 }
 
 export interface Roles {

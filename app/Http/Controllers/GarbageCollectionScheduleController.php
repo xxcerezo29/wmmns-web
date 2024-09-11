@@ -14,27 +14,51 @@ use Inertia\Inertia;
 
 class GarbageCollectionScheduleController extends Controller
 {
-    public function list(){
+    public function list()
+    {
         $user = Auth::user();
-        if($user->hasRole('admin'))
-            $schedule = CollectionSchedule::with('truck')->with('route')->orderBy('day')->orderBy('time')->paginate(10);
-        else
-        $schedule = CollectionSchedule::where('barangay', $user->barangay)->with('truck')->with('route')->orderBy('day')->orderBy('time')->paginate(10);
-        
-        $group = $schedule->groupBy('day');
+
+        $query  = CollectionSchedule::query()
+            ->with('truck', 'route')
+            ->when(!$user->hasRole('admin'), function ($query) use ($user) {
+                $query->where('barangay', $user->barangay);
+            })
+            ->orderBy('day')
+            ->orderBy('time');
+
+        $paginatedSchedule = $query->paginate(20);
+
+        $grouped = $paginatedSchedule->getCollection()->groupBy('day');
+
+        // if ($user->hasRole('admin'))
+        //     $schedule = CollectionSchedule::with('truck')->with('route')->orderBy('day')->orderBy('time')->paginate(10);
+        // else
+        //     $schedule = CollectionSchedule::where('barangay', $user->barangay)->with('truck')->with('route')->orderBy('day')->orderBy('time')->paginate(10);
+
+        // $group = $schedule->groupBy('day');
+
+        $pagination = [
+            'current_page' => $paginatedSchedule->currentPage(),
+            'last_page' => $paginatedSchedule->lastPage(),
+            'next_page_url' => $paginatedSchedule->nextPageUrl(),
+            'prev_page_url' => $paginatedSchedule->previousPageUrl(),
+            'links' => $paginatedSchedule->linkCollection()->toArray(), // Provide full pagination links
+        ];
 
         return Inertia::render('Schedule/List', [
-            'schedule' => $group
+            'schedule' => $grouped,
+            'pagination' => $pagination
         ]);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $schedule = CollectionSchedule::findOrFail($id);
 
-        if(Auth::user()->hasRole('admin')){
+        if (Auth::user()->hasRole('admin')) {
             $trucks = Truck::all();
             $routes = Route::all();
-        }else{
+        } else {
             $trucks = Truck::where('barangay', Auth::user()->barangay)->get();
             $routes = Route::where('barangay',  Auth::user()->barangay)->get();
         }
@@ -46,13 +70,14 @@ class GarbageCollectionScheduleController extends Controller
         ]);
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $schedule = CollectionSchedule::findOrFail($id);
 
-        if(Auth::user()->hasRole('admin')){
+        if (Auth::user()->hasRole('admin')) {
             $trucks = Truck::all();
             $routes = Route::all();
-        }else{
+        } else {
             $trucks = Truck::where('barangay', Auth::user()->barangay)->get();
             $routes = Route::where('barangay',  Auth::user()->barangay)->get();
         }
@@ -64,11 +89,12 @@ class GarbageCollectionScheduleController extends Controller
         ]);
     }
 
-    public function create(){
-        if(Auth::user()->hasRole('admin')){
+    public function create()
+    {
+        if (Auth::user()->hasRole('admin')) {
             $trucks = Truck::all();
             $routes = Route::all();
-        }else{
+        } else {
             $trucks = Truck::where('barangay', Auth::user()->barangay)->get();
             $routes = Route::where('barangay',  Auth::user()->barangay)->get();
         }
@@ -78,7 +104,8 @@ class GarbageCollectionScheduleController extends Controller
         ]);
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $request->validate([
             'barangay' => 'required|string|max:255',
             'day' => 'required|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
@@ -88,7 +115,7 @@ class GarbageCollectionScheduleController extends Controller
         ]);
 
         DB::beginTransaction();
-        try{
+        try {
             $schedule = CollectionSchedule::create([
                 'truck_id' => $request->truck_id,
                 'day' => $request->day,
@@ -99,16 +126,16 @@ class GarbageCollectionScheduleController extends Controller
 
             DB::commit();
 
-            return redirect(route('schedule.calendar'))->with(['message' => 'New Schedule Added.', 'status'=> 'success']);
-
-        }catch(Exception $e){
+            return redirect(route('schedule.calendar'))->with(['message' => 'New Schedule Added.', 'status' => 'success']);
+        } catch (Exception $e) {
             DB::rollBack();
 
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $request->validate([
             'barangay' => 'required|string|max:255',
             'day' => 'required|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
@@ -118,10 +145,10 @@ class GarbageCollectionScheduleController extends Controller
         ]);
 
         DB::beginTransaction();
-        try{
+        try {
 
             $schedule = CollectionSchedule::findOrFail($id);
-            
+
             $schedule->update([
                 'truck_id' => $request->truck_id,
                 'day' => $request->day,
@@ -132,9 +159,8 @@ class GarbageCollectionScheduleController extends Controller
 
             DB::commit();
 
-            return redirect(route('schedule.calendar'))->with(['message' => 'New Schedule Added.', 'status'=> 'success']);
-
-        }catch(Exception $e){
+            return redirect(route('schedule.calendar'))->with(['message' => 'New Schedule Added.', 'status' => 'success']);
+        } catch (Exception $e) {
             DB::rollBack();
 
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);

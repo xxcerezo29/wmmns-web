@@ -11,12 +11,20 @@ use Inertia\Inertia;
 
 class ComplaintsController extends Controller
 {
-    public function list () {
+    public function list (Request $request) {
         $user = Auth::user();
         if($user->hasRole('admin'))
-            $complaints = Report::with('resident')->with('schedule')->paginate(10);
+            $complaints = Report::when($request->searchTerm, function ($query, $searchTerm) {
+                return $query->where('reference_number', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('report_type', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+            })->with('resident')->with('schedule')->paginate(10)->withQueryString();
         else
-            $complaints = Report::where('barangay', $user->barangay)->with('resident')->with('schedule')->paginate(10);
+            $complaints = Report::when($request->searchTerm, function ($query, $searchTerm) {
+                return $query->where('reference_number', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('report_type', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+            })->where('barangay', $user->barangay)->with('resident')->with('schedule')->paginate(10)->withQueryString();
 
         return Inertia::render('Complaints/List', [
             'complaints' => $complaints

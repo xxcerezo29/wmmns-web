@@ -10,8 +10,11 @@ use Inertia\Inertia;
 
 class RoutePlanController extends Controller
 {
-    public function list(){
-        $routes = Route::paginate(10);
+    public function list(Request $request){
+        $routes = Route::when($request->searchTerm, function ($query, $searchTerm) {
+            return $query->where('name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+        })->paginate(10);
         return Inertia::render('Routes/List', [
             'routes' => $routes
         ]);
@@ -25,6 +28,17 @@ class RoutePlanController extends Controller
         return Inertia::render('Routes/Edit', [
             '_route' => $route
         ]);
+    }
+    public function show($id){
+        $route = Route::findOrFail($id);
+        try{
+            return Inertia::render('Routes/View', [
+                'route' => $route
+            ]);
+            
+        }catch(Exception $e){
+            return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
     }
 
     public function store(Request $request){

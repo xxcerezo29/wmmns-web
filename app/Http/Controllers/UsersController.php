@@ -16,10 +16,16 @@ use function PHPUnit\Framework\isEmpty;
 
 class UsersController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
 
-        $users = User::with('roles')->paginate(10)->withQueryString();
+        $users = User::with('roles')->when($request->searchTerm, function ($query, $searchTerm) {
+            return $query->where('firstname', 'like', '%' . $searchTerm . '%')
+                ->orWhere('middlename', 'like', '%' . $searchTerm . '%')
+                ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
+                ->orWhere('email', 'like', '%' . $searchTerm . '%')
+                ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+        })->paginate(10)->withQueryString();
 
         return Inertia::render('Users/List', [
             'users' => $users
@@ -32,6 +38,19 @@ class UsersController extends Controller
             'roles' => $roles
         ]);
     }
+
+    public function show($id){
+        $user = User::with('roles')->findOrFail($id);
+        try{
+            return Inertia::render('Users/View', [
+                'user' => $user
+            ]);
+            
+        }catch(Exception $e){
+            return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
+    }
+
 
     public function edit($id){
         $roles = Role::all();

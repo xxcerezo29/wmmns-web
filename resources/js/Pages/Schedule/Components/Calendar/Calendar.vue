@@ -5,6 +5,7 @@ import Header from './Header.vue';
 import DateComponent from './DateComponent.vue';
 import { Schedule } from '@/Pages/types/interface';
 import Sched from './Sched.vue';
+import Pagination from '@/Components/ui/daisyUI/Pagination.vue';
 
 
 const props = defineProps<{
@@ -16,6 +17,12 @@ const props = defineProps<{
         friday: Array<Schedule>;
         saturday: Array<Schedule>;
         sunday: Array<Schedule>;
+    };
+    pagination: {
+        current_page : number;
+        last_page: number;
+        next_page_url: string;
+        prev_page_url: string;
     }
 }>();
 
@@ -81,12 +88,8 @@ onMounted(() => {
                 <Sched :day="props.schedule.saturday" />
                 <Sched :day="props.schedule.sunday" />
             </div>
-            
-                
-                
-           
             <!-- <DateComponent :calendar_day="calendarDays" /> -->
         </div>
-
+        
     </div>
 </template>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ComplaintsController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DriversController;
 use App\Http\Controllers\GarbageCollectionScheduleController;
 use App\Http\Controllers\PermissionsController;
@@ -24,9 +25,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
 
@@ -36,6 +35,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/truck-create', [TrucksController::class, 'store'])->name('trucks.store');
         Route::get('/truck-edit/{id}', [TrucksController::class, 'edit'])->name('trucks.edit');
         Route::delete('/truck-delete/{id}', [TrucksController::class, 'destroy'])->name('trucks.delete');
+        Route::get('/truck-show/{id}', [TrucksController::class, 'show'])->name('trucks.show');
     });
 
     Route::prefix('routes')->group(function() {
@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/route-edit/{id}', [RoutePlanController::class, 'edit'])->name('routes.edit');
         Route::post('/route-edit/{id}', [RoutePlanController::class, 'update'])->name('routes.update');
         Route::delete('/route-delete/{id}', [RoutePlanController::class, 'destroy'])->name('routes.destroy');
+        Route::get('/route-show/{id}', [RoutePlanController::class, 'show'])->name('routes.show');
     });
 
     Route::prefix('schedule')->group(function(){
@@ -63,9 +64,11 @@ Route::middleware('auth')->group(function () {
         Route::post('/user-create', [UsersController::class, 'store'])->name('users.all.store');
         Route::get('/user-create', [UsersController::class, 'create'])->name('users.all.create');
         Route::delete('/user-delete/{id}', [UsersController::class, 'destroy'])->name('users.all.delete');
+        Route::get('/user-show/{id}', [UsersController::class, 'show'])->name('users.show');
 
         Route::prefix('residents')->group(function(){
             Route::get('/', [ResidentsController::class, 'list'])->name('users.residents.list');
+            Route::get('/resident-show/{id}', [ResidentsController::class, 'show'])->name('users.residents.show');
         });
 
         Route::prefix('drivers')->group(function(){
@@ -75,6 +78,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/driver-update/{id}', [DriversController::class,'edit'])->name('users.drivers.edit');
             Route::post('/driver-update/{id}', [DriversController::class,'update'])->name('users.drivers.update');
             Route::delete('/driver-delete/{id}', [DriversController::class,'destroy'])->name('users.drivers.delete');
+            Route::get('/driver-show/{id}', [DriversController::class, 'show'])->name('users.drivers.show');
         });
 
         Route::prefix('roles')->group(function () {

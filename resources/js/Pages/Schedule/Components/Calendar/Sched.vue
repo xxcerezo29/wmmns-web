@@ -27,6 +27,11 @@ const formatTime = (time: string): string => {
                 <li>
                     <div class="group flex">
                         <p class="flex-auto truncate font-medium text-gray-900">
+                            Barangay- {{ mon.barangay }}</p>
+
+                    </div>
+                    <div class="group flex">
+                        <p class="flex-auto truncate font-medium text-gray-900">
                             Truck- {{ mon.truck.plate_number }}</p>
 
                     </div>

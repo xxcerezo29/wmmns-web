@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { hasRole } from '@/functions';
 import { IComplaint, paginated } from '../types/interface';
 import { EyeDropperIcon, EyeIcon, TrashIcon } from '@heroicons/vue/24/outline';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
+import Pagination from '@/Components/ui/daisyUI/Pagination.vue';
+import { ref } from 'vue';
 
 const props = defineProps<{
     complaints: paginated<IComplaint>
@@ -13,6 +15,21 @@ const props = defineProps<{
 
 const formatReportType = (type: string) => {
     return type.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+const searchTerm = ref("");
+
+const search = () => {
+    router.get(
+        route("complaints.list"),
+        {
+            searchTerm: searchTerm.value,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+        }
+    );
 };
 
 </script>
@@ -25,6 +42,17 @@ const formatReportType = (type: string) => {
         </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
+                <div class="flex flex-row gap-2 justify-end mb-2">
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            class="input input-bordered w-full max-w-xs"
+                            @keyup="search"
+                            v-model="searchTerm"
+                        />
+                    </div>
+                </div>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5">
                     <div class="p-6 text-gray-900">
                         <div class="overflow-x-auto">
@@ -32,6 +60,7 @@ const formatReportType = (type: string) => {
                                 <thead>
                                     <tr>
                                         <th></th>
+                                        <th>Ref. Id</th>
                                         <th>Report Type</th>
                                         <th>Description</th>
                                         <th>Schedule</th>
@@ -43,6 +72,7 @@ const formatReportType = (type: string) => {
                                 <tbody>
                                     <tr v-for="(complaint, index) in props.complaints.data">
                                         <td>{{ index+1 }}</td>
+                                        <td>{{complaint.reference_number}}</td>
                                         <td>{{ formatReportType(complaint.report_type) }}</td>
                                         <td>{{ complaint.description }}</td>
                                         <td>
@@ -70,6 +100,7 @@ const formatReportType = (type: string) => {
                                     </tr>
                                 </tbody>
                             </table>
+                            <Pagination :paginate="props.complaints" />
                         </div>
                     </div>
                 </div>
