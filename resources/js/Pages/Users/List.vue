@@ -12,6 +12,7 @@ import { onMounted, ref } from 'vue';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 import Modal from '@/Components/ui/daisyUI/Modal.vue';
 import LinkButton from '@/Components/ui/daisyUI/LinkButton.vue';
+import Pagination from '@/Components/ui/daisyUI/Pagination.vue';
 
 const props = defineProps<{
     users: paginated<User>
@@ -125,6 +126,7 @@ onMounted(() => {
                                     </tr>
                                 </tbody>
                             </table>
+                            <Pagination :paginate="props.users" />
                         </div>
                     </div>
                 </div>

@@ -95,6 +95,11 @@ const closeSidebar = () => {
                         <RectangleStackIcon class="h-6" />
                     </template>
                 </MenuItem>
+                <MenuItem pattern="roam-map" routeName="roam-map.view" label="Map">
+                    <template #menuIcon>
+                        <MapIcon class="h-6"/>
+                    </template>
+                </MenuItem>
                 <MenuItem pattern="spatial-map" routeName="spatial-map.view" label="Spatial Map">
                     <template #menuIcon>
                         <MapPinIcon class="h-6" />

@@ -2,11 +2,15 @@ import axios, { AxiosInstance } from 'axios';
 import { route as ziggyRoute } from 'ziggy-js';
 import { PageProps as AppPageProps } from './';
 import { InertiaAppProps } from '@inertiajs/vue3/types/app';
+import Pusher from 'pusher-js';
+import Echo from 'laravel-echo';
 
 declare global {
     interface Window {
         axios: AxiosInstance;
         HSStaticMethods: IStaticMethods;
+        Pusher: Pusher
+        Echo: Echo
     }
 
 

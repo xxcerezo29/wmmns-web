@@ -4,6 +4,7 @@ use App\Http\Controllers\ComplaintsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DriversController;
 use App\Http\Controllers\GarbageCollectionScheduleController;
+use App\Http\Controllers\MapController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResidentsController;
@@ -112,6 +113,9 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('spatial-map')->group(function(){
         Route::get('/', [SpatialMapController::class, 'view'])->name('spatial-map.view');
+    });
+    Route::prefix('map')->group(function(){
+        Route::get('/', [MapController::class, 'view'])->name('roam-map.view');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Events\TrackGarbageTruck;
+use App\Events\TrackGarbageTruckWeb;
 use App\Http\Controllers\Controller;
 use App\Models\Roam;
 use Exception;
@@ -95,6 +96,7 @@ class RoamController extends Controller
         $barangay = $user->barangay;
 
         event(new TrackGarbageTruck($location, $barangay, $user,$truck));
+        event(new TrackGarbageTruckWeb($location, $barangay, $user,$truck));
 
         return response()->json(['status' => 'Location Sent']);
     }

@@ -136,6 +136,7 @@ class UsersController extends Controller
         }catch(Exception $e){
 
             DB::rollBack();
+            dd('test');
 
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
