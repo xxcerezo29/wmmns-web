@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResidentsController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\RoutePlanController;
+use App\Http\Controllers\SpatialMapController;
 use App\Http\Controllers\TrucksController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
@@ -107,6 +108,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/reviewed/{id}', [ComplaintsController::class, 'reviewed'])->name('complaints.reviewed');
         Route::get('/resolved/{id}', [ComplaintsController::class, 'resolved'])->name('complaints.resolved');
         Route::get('/closed/{id}', [ComplaintsController::class, 'closed'])->name('complaints.closed');
+    });
+
+    Route::prefix('spatial-map')->group(function(){
+        Route::get('/', [SpatialMapController::class, 'view'])->name('spatial-map.view');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

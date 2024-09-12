@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { Bars3Icon, BuildingStorefrontIcon, CalendarDaysIcon, HomeIcon, MapIcon, ReceiptRefundIcon, RectangleStackIcon, TruckIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
+import { Bars3Icon, BuildingStorefrontIcon, CalendarDaysIcon, HomeIcon, MapIcon, MapPinIcon, ReceiptRefundIcon, RectangleStackIcon, TruckIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
 import MenuItem from '@/Components/ui/MenuItem.vue';
 import MenuItemDropdown from '@/Components/ui/MenuItemDropdown.vue';
 import { hasRole } from '@/functions';
@@ -93,6 +93,11 @@ const closeSidebar = () => {
                 <MenuItem pattern="complaints" routeName="complaints.list" label="Complaints">
                     <template #menuIcon>
                         <RectangleStackIcon class="h-6" />
+                    </template>
+                </MenuItem>
+                <MenuItem pattern="spatial-map" routeName="spatial-map.view" label="Spatial Map">
+                    <template #menuIcon>
+                        <MapPinIcon class="h-6" />
                     </template>
                 </MenuItem>
             </ul>
