@@ -116,7 +116,7 @@ class TrucksController extends Controller
 
             $pdf->loadView('pdf.trucklist', ['trucks' => $trucks]);
 
-            return $pdf->stream('TruckList');
+            return $pdf->download('TruckList.pdf');
 
         }catch(Exception $e){
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);

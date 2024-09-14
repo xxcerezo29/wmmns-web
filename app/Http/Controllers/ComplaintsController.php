@@ -140,7 +140,7 @@ class ComplaintsController extends Controller
 
             $pdf->loadView('pdf.complaintlist', ['complaints' => $complaints]);
 
-            return $pdf->stream('TruckList');
+            return $pdf->download('ComplaintList.pdf');
 
         }catch(Exception $e){
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);

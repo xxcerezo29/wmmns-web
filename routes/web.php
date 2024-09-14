@@ -119,6 +119,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('spatial-map')->group(function(){
         Route::get('/', [SpatialMapController::class, 'view'])->name('spatial-map.view');
+        Route::post('/reports', [SpatialMapController::class, 'downloadPDF'])->name('spatial-map.pdf');
     });
     Route::prefix('map')->group(function(){
         Route::get('/', [MapController::class, 'view'])->name('roam-map.view');

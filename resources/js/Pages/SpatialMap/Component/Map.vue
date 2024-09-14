@@ -3,6 +3,10 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { parse } from 'terraformer-wkt-parser';
 import { onMounted, ref } from 'vue';
+import domtoimage from 'dom-to-image';
+import { router, useForm } from '@inertiajs/vue3';
+import axios from 'axios';
+import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 
 const props = defineProps<{
     spatial_map: Array<{
@@ -31,6 +35,32 @@ const getColor = (count: number) => {
     return '#05FF05'; // No data
 };
 
+const saveMapAsPNG = () => {
+    if (mapContainer.value) {
+        domtoimage.toPng(mapContainer.value)
+            .then((dataUrl: string) => {
+                const imageData = dataUrl.replace(/^data:image\/png;base64,/, '');
+
+                axios.post(route('spatial-map.pdf'), { image: imageData }, {
+                    responseType: 'blob',  // Ensure the response type is 'blob'
+                }).then((response) => {
+                    const url = URL.createObjectURL(response.data);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'SpatialMap.pdf';
+                    link.click();
+                    URL.revokeObjectURL(url);
+                })
+                .catch((error) => {
+                    console.error('Error sending image to server:', error);
+                });
+
+            })
+            .catch((error: any) => {
+                console.error('Error generating image:', error);
+            });
+    }
+};
 const addLegend = (map: L.Map) => {
     const legend = new L.Control({ position: 'bottomright' });
 
@@ -121,14 +151,19 @@ onMounted(() => {
 
         addLegend(map);
         map.on('zoomend', updateLabels);
+
+
     }
 })
 </script>
 
 <template>
     <div class="m-auto" style="height:600px; width:800px">
+        <div class="flex w-full gap-2 justify-end">
+            <SecondaryButton @click="saveMapAsPNG">Download PDF</SecondaryButton>
+        </div>
+        
         <div id="map" ref="mapContainer" style="height: 500px; width: 100%;" class="mt-10">
-
         </div>
     </div>
 </template>

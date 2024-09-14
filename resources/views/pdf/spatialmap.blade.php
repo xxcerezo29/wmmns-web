@@ -18,10 +18,13 @@
             max-width: 100%;
             height: auto;
         }
+        .map-container {
+            width: 100%;
+            text-align: center; /* Center the image horizontally */
+        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
         }
         table, th, td {
             border: 1px solid black;
@@ -44,24 +47,28 @@
 <body>
     <div class="header">
         <img src="{{ public_path('images/header-logo.png') }}" alt="Header Logo">
-        <h1>Truck List</h1>
+        <h1>Spatial Map</h1>
+    </div>
+
+    <div class="map-container">
+        <img src="data:image/png;base64,{{ $map }}" alt="Map" style="width:100%; height:auto;">
     </div>
 
     <table>
         <thead>
             <tr>
                 <th>#</th>
-                <th>Truck Plate Number</th>
                 <th>Barangay</th>
+                <th>Report Count</th>
                 <!-- Add more columns as necessary -->
             </tr>
         </thead>
         <tbody>
-            @foreach($trucks as $truck)
+            @foreach($reports as $report => $count)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $truck->plate_number }}</td>
-                    <td>{{ $truck->barangay }}</td>
+                    <td>{{ $report }}</td>
+                    <td>{{ $count }}</td>
                 </tr>
             @endforeach
         </tbody>

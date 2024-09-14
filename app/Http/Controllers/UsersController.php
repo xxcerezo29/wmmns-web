@@ -174,7 +174,7 @@ class UsersController extends Controller
 
             $pdf->loadView('pdf.userslist', ['users' => $users]);
 
-            return $pdf->stream('TruckList');
+            return $pdf->download('UserList');
         } catch (Exception $e) {
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
