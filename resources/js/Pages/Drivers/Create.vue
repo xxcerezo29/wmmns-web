@@ -6,7 +6,7 @@ import { useForm } from '@inertiajs/vue3';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import { ICities, Roles, Truck } from '../types/interface';
+import { ICities, Roles, Truck } from '../../types/interface';
 import axios from 'axios';
 import { hasRole } from '@/functions';
 

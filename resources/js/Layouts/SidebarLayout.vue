@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import { Bars3Icon, BuildingStorefrontIcon, CalendarDaysIcon, HomeIcon, MapIcon, MapPinIcon, ReceiptRefundIcon, RectangleStackIcon, TruckIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
+import { CalendarDaysIcon, HomeIcon, MapIcon, MapPinIcon, ReceiptRefundIcon, RectangleStackIcon, TruckIcon, UserGroupIcon } from '@heroicons/vue/24/outline';
 import MenuItem from '@/Components/ui/MenuItem.vue';
 import MenuItemDropdown from '@/Components/ui/MenuItemDropdown.vue';
 import { hasRole } from '@/functions';

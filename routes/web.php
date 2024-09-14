@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/truck-edit/{id}', [TrucksController::class, 'edit'])->name('trucks.edit');
         Route::delete('/truck-delete/{id}', [TrucksController::class, 'destroy'])->name('trucks.delete');
         Route::get('/truck-show/{id}', [TrucksController::class, 'show'])->name('trucks.show');
+        Route::get('/truck-list', [TrucksController::class, 'downloadPDF'])->name('trucks.pdf');
     });
 
     Route::prefix('routes')->group(function() {
@@ -57,6 +58,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/schedule-edit/{id}', [GarbageCollectionScheduleController::class,'edit'])->name('schedule.edit');
         Route::post('/schedule-edit/{id}', [GarbageCollectionScheduleController::class,'update'])->name('schedule.update');
         Route::post('/schedule-create', [GarbageCollectionScheduleController::class,'store'])->name('schedule.store');
+        Route::get('/schedule-list', [GarbageCollectionScheduleController::class, 'downloadPDF'])->name('schedule.pdf');
     });
 
     Route::prefix('users')->group(function () {
@@ -67,10 +69,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/user-create', [UsersController::class, 'create'])->name('users.all.create');
         Route::delete('/user-delete/{id}', [UsersController::class, 'destroy'])->name('users.all.delete');
         Route::get('/user-show/{id}', [UsersController::class, 'show'])->name('users.show');
+        Route::get('/users-list', [UsersController::class, 'downloadPDF'])->name('users.pdf');
 
         Route::prefix('residents')->group(function(){
             Route::get('/', [ResidentsController::class, 'list'])->name('users.residents.list');
             Route::get('/resident-show/{id}', [ResidentsController::class, 'show'])->name('users.residents.show');
+            Route::get('/drivers-list', [ResidentsController::class, 'downloadPDF'])->name('users.residents.pdf');
         });
 
         Route::prefix('drivers')->group(function(){
@@ -81,6 +85,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/driver-update/{id}', [DriversController::class,'update'])->name('users.drivers.update');
             Route::delete('/driver-delete/{id}', [DriversController::class,'destroy'])->name('users.drivers.delete');
             Route::get('/driver-show/{id}', [DriversController::class, 'show'])->name('users.drivers.show');
+            Route::get('/drivers-list', [DriversController::class, 'downloadPDF'])->name('users.drivers.pdf');
         });
 
         Route::prefix('roles')->group(function () {
@@ -109,6 +114,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/reviewed/{id}', [ComplaintsController::class, 'reviewed'])->name('complaints.reviewed');
         Route::get('/resolved/{id}', [ComplaintsController::class, 'resolved'])->name('complaints.resolved');
         Route::get('/closed/{id}', [ComplaintsController::class, 'closed'])->name('complaints.closed');
+        Route::get('/complaints-list', [ComplaintsController::class, 'downloadPDF'])->name('complaints.pdf');
     });
 
     Route::prefix('spatial-map')->group(function(){

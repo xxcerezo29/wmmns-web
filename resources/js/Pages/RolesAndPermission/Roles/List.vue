@@ -8,7 +8,7 @@ import { PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline
 import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
-import { Roles } from '@/Pages/types/interface';
+import { Roles } from '@/types/interface';
 import Modal from '@/Components/ui/daisyUI/Modal.vue';
 import PrimaryButton from '@/Components/ui/daisyUI/PrimaryButton.vue';
 

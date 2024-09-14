@@ -5,7 +5,7 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { EyeIcon, PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
-import { paginated, Route } from '../types/interface';
+import { paginated, Route } from '../../types/interface';
 import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';

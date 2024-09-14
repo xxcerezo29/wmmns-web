@@ -32,55 +32,58 @@ class UsersController extends Controller
         ]);
     }
 
-    public function create(){
+    public function create()
+    {
         $roles = Role::all();
         return Inertia::render('Users/Create', [
             'roles' => $roles
         ]);
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $user = User::with('roles')->findOrFail($id);
-        try{
+        try {
             return Inertia::render('Users/View', [
                 'user' => $user
             ]);
-            
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }
 
 
-    public function edit($id){
+    public function edit($id)
+    {
         $roles = Role::all();
         $user = User::findOrFail($id);
         return Inertia::render('Users/Update', [
             'user' => $user,
-            'roles' => $roles 
+            'roles' => $roles
         ]);
     }
 
-    public function update (Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $request->validate([
             'firstname' => 'required|string|max:255',
             'middlename' => 'nullable|string|max:255',
             'lastname' => 'required|string|max:255',
             'barangay' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:users,email,'.$id,
+            'email' => 'required|string|lowercase|email|max:255|unique:users,email,' . $id,
             'roles' => 'nullable|array'
         ]);
 
         DB::beginTransaction();
 
-        try{
+        try {
 
             $user = User::findOrFail($id);
 
             $user->update([
-                'firstname' =>$request->firstname,
-                'middlename' =>$request->middlename,
-                'lastname' =>$request->lastname,
+                'firstname' => $request->firstname,
+                'middlename' => $request->middlename,
+                'lastname' => $request->lastname,
                 'barangay' => $request->barangay,
                 'email' => $request->email,
             ]);
@@ -93,9 +96,8 @@ class UsersController extends Controller
 
             DB::commit();
 
-            return redirect(route('users.all.list'))->with(['message' => 'User Updated.', 'status'=> 'success']);
-
-        }catch(Exception $e){
+            return redirect(route('users.all.list'))->with(['message' => 'User Updated.', 'status' => 'success']);
+        } catch (Exception $e) {
 
             DB::rollBack();
 
@@ -103,37 +105,37 @@ class UsersController extends Controller
         }
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $request->validate([
             'firstname' => 'required|string|max:255',
             'middlename' => 'nullable|string|max:255',
             'lastname' => 'required|string|max:255',
             'barangay' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'roles' => 'nullable|array'
         ]);
 
         DB::beginTransaction();
-        try{
+        try {
             $user = User::create([
-                'firstname' =>$request->firstname,
-                'middlename' =>$request->middlename,
-                'lastname' =>$request->lastname,
+                'firstname' => $request->firstname,
+                'middlename' => $request->middlename,
+                'lastname' => $request->lastname,
                 'barangay' => $request->barangay,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
 
-            if(!isEmpty($request->roles)){
+            if (!isEmpty($request->roles)) {
                 $user->assignRole($request->roles);
             }
 
             DB::commit();
 
-            return redirect(route('users.all.list'))->with(['message' => 'New User Added.', 'status'=> 'success']);
-
-        }catch(Exception $e){
+            return redirect(route('users.all.list'))->with(['message' => 'New User Added.', 'status' => 'success']);
+        } catch (Exception $e) {
 
             DB::rollBack();
             dd('test');
@@ -142,23 +144,39 @@ class UsersController extends Controller
         }
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         DB::beginTransaction();
-        try{
+        try {
 
             $user = User::findOrFail($id);
 
-            if(Auth::user()->id === $id)
+            if (Auth::user()->id === $id)
                 throw new Exception("Can't Delete this user");
 
             $user->delete();
 
             DB::commit();
-
-        }catch(Exception $e){
+        } catch (Exception $e) {
             DB::rollBack();
             return redirect(route('users.all.list'))->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }
-    
+
+    public function downloadPDF()
+    {
+        try {
+            $users = User::with('roles')->get();
+
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->getDomPDF()->set_option("isRemoteEnabled", true);
+
+            $pdf->loadView('pdf.userslist', ['users' => $users]);
+
+            return $pdf->stream('TruckList');
+        } catch (Exception $e) {
+            return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
+    }
 }

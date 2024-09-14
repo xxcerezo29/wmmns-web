@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { LineChart } from 'vue-chart-3';
 import { Chart, registerables } from 'chart.js';
-import { IChartData } from '@/Pages/types/interface';
+import { IChartData } from '@/types/interface';
 
 Chart.register(...registerables);
 

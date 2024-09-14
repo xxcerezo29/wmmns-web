@@ -3,7 +3,7 @@ import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
 import AuthenticatedLayout from "../../Layouts/AuthenticatedLayout.vue";
 import { onMounted, ref } from "vue";
 
-import { ICities, Route } from "../types/interface";
+import { ICities, Route } from "../../types/interface";
 import axios from "axios";
 import { hasRole } from "@/functions";
 import PrimaryButton from "@/Components/ui/daisyUI/PrimaryButton.vue";

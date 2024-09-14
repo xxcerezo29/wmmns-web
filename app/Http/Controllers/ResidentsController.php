@@ -34,4 +34,21 @@ class ResidentsController extends Controller
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }
+
+    public function downloadPDF(){
+        try{
+            $residents = Resident::all();
+            
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->getDomPDF()->set_option("isRemoteEnabled", true);
+
+            $pdf->loadView('pdf.residentslist', ['residents' => $residents]);
+
+            return $pdf->stream('TruckList');
+
+        }catch(Exception $e){
+            return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
+    }
 }

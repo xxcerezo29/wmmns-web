@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Truck } from '../types/interface';
+import { Truck } from '../../types/interface';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 import { ref } from 'vue';
 

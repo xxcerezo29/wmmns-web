@@ -3,9 +3,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { EyeIcon, PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ArrowDownCircleIcon, EyeIcon, PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
-import { paginated, Truck } from '../types/interface';
+import { paginated, Truck } from '../../types/interface';
 import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
@@ -82,6 +82,10 @@ onMounted(()=> {
                             <PlusCircleIcon class="h-7" />
                         </template>
                     </LinkButton>
+                    <a :href="route('trucks.pdf')" target="_blank" class="disabled:text-gray-500 inline-flex hover:border-transparent items-center px-4 py-3 btn bg-slate-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-kwikweb dark:hover:bg-white focus:bg-kwikweb-200 dark:focus:bg-white active:bg-slate-900 dark:active:bg-gray-300 focus:outline-none focus:ring-offset-2 transition ease-in-out duration-150">
+                        <ArrowDownCircleIcon class="h-7" />
+                        Download PDF
+                    </a>
                 </div>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5">
                     <div class="p-6 text-gray-900">

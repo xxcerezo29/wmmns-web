@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-import { Schedule } from '../types/interface';
+import { Schedule } from '../../types/interface';
 import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue';
 import Modal from '@/Components/ui/daisyUI/Modal.vue';

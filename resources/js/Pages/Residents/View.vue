@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Resident } from '../types/interface';
+import { Resident } from '../../types/interface';
 
 const props = defineProps<{
     resident: Resident

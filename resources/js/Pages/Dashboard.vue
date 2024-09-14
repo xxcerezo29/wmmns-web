@@ -4,7 +4,7 @@ import LineChart from '@/Components/ui/LineChart.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { UsersIcon } from '@heroicons/vue/24/outline';
 import { Head } from '@inertiajs/vue3';
-import { IChartData } from './types/interface';
+import { IChartData } from '../types/interface';
 
 const props = defineProps<{
     stats: Array<{

@@ -5,7 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { useForm } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
 import { useToast } from 'vue-toastification';
-import { Permissions, Roles } from '@/Pages/types/interface';
+import { Permissions, Roles } from '@/types/interface';
 
 const props = defineProps<{
     permissions: Array<Permissions>;
