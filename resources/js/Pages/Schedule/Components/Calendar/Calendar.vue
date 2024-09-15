@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 import Day from './Day.vue';
 import Header from './Header.vue';
 import DateComponent from './DateComponent.vue';
-import { Schedule } from '@/Pages/types/interface';
+import { Schedule } from '@/types/interface';
 import Sched from './Sched.vue';
 import Pagination from '@/Components/ui/daisyUI/Pagination.vue';
 

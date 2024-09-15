@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
-import { Schedule } from '../../../types/interface';
+import { Schedule } from '../../../../types/interface';
 
 
 const props = defineProps<{

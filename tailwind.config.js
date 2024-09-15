@@ -16,10 +16,14 @@ export default {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
         },
+        screens: {
+            'xs': '385px',
+            ...defaultTheme.screens,
+        },
     },
 
     plugins: [
-        require("daisyui"),
+        require('daisyui'),
         forms, 
         ],
 };

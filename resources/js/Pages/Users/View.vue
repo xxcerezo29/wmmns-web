@@ -3,7 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 import { ref } from 'vue';
-import { User } from '../types/index';
+import { User } from '../../types/index';
 
 const props = defineProps<{
     user: User

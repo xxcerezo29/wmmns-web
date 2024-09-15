@@ -181,4 +181,25 @@ class DriversController extends Controller
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }
+
+    public function downloadPDF(){
+        try{
+            $user = Auth::user();
+            if ($user->hasRole('admin'))
+                $drivers = Driver::with('AssignedTruck')->get();
+            else
+                $drivers = Driver::where('barangay', $user->barangay)->with('AssignedTruck')->get();
+            
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->getDomPDF()->set_option("isRemoteEnabled", true);
+
+            $pdf->loadView('pdf.driverslist', ['drivers' => $drivers]);
+
+            return $pdf->download('DriverList.pdf');
+
+        }catch(Exception $e){
+            return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Truck;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -97,6 +98,27 @@ class TrucksController extends Controller
 
             DB::rollBack();
 
+            return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
+    }
+
+    public function downloadPDF(){
+        try{
+            $user = Auth::user();
+            if ($user->hasRole('admin'))
+                $trucks = Truck::all();
+            else
+                $trucks = Truck::where('barangay', $user->barangay)->all();
+            
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->getDomPDF()->set_option("isRemoteEnabled", true);
+
+            $pdf->loadView('pdf.trucklist', ['trucks' => $trucks]);
+
+            return $pdf->download('TruckList.pdf');
+
+        }catch(Exception $e){
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }

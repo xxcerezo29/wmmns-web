@@ -166,4 +166,25 @@ class GarbageCollectionScheduleController extends Controller
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }
+
+    public function downloadPDF(){
+        try{
+            $user = Auth::user();
+            if ($user->hasRole('admin'))
+                $schedules = CollectionSchedule::with('truck')->with('route')->get();
+            else
+                $schedules = CollectionSchedule::with('truck')->with('route')->where('barangay', $user->barangay)->get();
+            
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+            $pdf->getDomPDF()->set_option("isRemoteEnabled", true);
+
+            $pdf->loadView('pdf.schedule', ['schedules' => $schedules]);
+
+            return $pdf->download('schedule.pdf');
+
+        }catch(Exception $e){
+            return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
+    }
 }

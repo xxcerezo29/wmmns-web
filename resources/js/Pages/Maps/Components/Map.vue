@@ -2,7 +2,7 @@
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { onMounted, ref } from 'vue';
-import { Driver } from '@/Pages/types/interface';
+import { Driver } from '@/types/interface';
 import { usePage } from '@inertiajs/vue3';
 import Pusher, { Channel } from 'pusher-js';
 

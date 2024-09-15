@@ -6,8 +6,8 @@ import { useForm } from '@inertiajs/vue3';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { onMounted, ref } from 'vue';
 import { useToast } from 'vue-toastification';
-import { ICities, Roles } from '../types/interface';
-import { User } from '../types';
+import { ICities, Roles } from '../../types/interface';
+import { User } from '../../types';
 import axios from 'axios';
 
 const props = defineProps<{

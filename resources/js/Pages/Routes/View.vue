@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Route } from '../types/interface';
+import { Route } from '../../types/interface';
 import MapView from './Component/MapView.vue';
 import { onMounted, ref } from 'vue';
 
