@@ -51,8 +51,8 @@ const closeSidebar = () => {
             <Link :href="route('dashboard')" aria-label="Brand"
                 class="flex-none text-xl font-semibold dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <div>
-                    <div class="w-40">
-                        WMMNS
+                    <div class="flex justify-center mt-2">
+                        <img src="/wmmns-logo.png" alt="WMMNS" class="h-24 w-24 rounded-full" />
                     </div>
                 </div>
             </Link>
