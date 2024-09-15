@@ -2,15 +2,11 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { ArrowDownTrayIcon, EyeIcon, PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ArrowDownTrayIcon} from '@heroicons/vue/24/outline';
 
-import { paginated, Truck } from '../types/interface';
 import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue';
-import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
 import Modal from '@/Components/ui/daisyUI/Modal.vue';
-import LinkButton from '@/Components/ui/daisyUI/LinkButton.vue';
-import Pagination from '@/Components/ui/daisyUI/Pagination.vue';
 
 const props = defineProps<{
     files: Array<{
