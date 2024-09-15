@@ -51,8 +51,8 @@ const closeSidebar = () => {
             <Link :href="route('dashboard')" aria-label="Brand"
                 class="flex-none text-xl font-semibold dark:text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600">
                 <div>
-                    <div class="w-40">
-                        WMMNS
+                    <div class="flex justify-center mt-2">
+                        <img src="/wmmns-logo.png" alt="WMMNS" class="h-24 w-24 rounded-full" />
                     </div>
                 </div>
             </Link>
@@ -103,6 +103,11 @@ const closeSidebar = () => {
                 <MenuItem pattern="spatial-map" routeName="spatial-map.view" label="Spatial Map">
                     <template #menuIcon>
                         <MapPinIcon class="h-6" />
+                    </template>
+                </MenuItem>
+                <MenuItem v-if="hasRole('Admin')" pattern="backup" routeName="backup.list" label="Backup">
+                    <template #menuIcon>
+                        <InboxStackIcon class="h-6" />
                     </template>
                 </MenuItem>
             </ul>
