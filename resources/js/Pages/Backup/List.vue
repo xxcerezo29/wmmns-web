@@ -71,10 +71,10 @@ onMounted(() => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
                 <div class="flex flex-row gap-2 justify-end mb-2">
-                    <div>
+                    <!-- <div>
                         <input type="text" placeholder="Search..." class="input input-bordered w-full max-w-xs"
                             @keyup="search" v-model="searchTerm" />
-                    </div>
+                    </div> -->
                 </div>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5">
                     <div class="p-6 text-gray-900">
