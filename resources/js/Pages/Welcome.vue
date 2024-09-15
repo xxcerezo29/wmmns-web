@@ -68,7 +68,7 @@ onMounted(() => {
             <div class="container">
                 <nav class="navbar py-2 navbar-expand-lg flex justify-between items-center relative duration-300">
                     <Link href="/">
-                    <img src="" alt="WMMNS" />
+                    <img src="/wmmns-logo.png" alt="WMMNS" class="h-24 rounded-full" />
                     </Link>
                     <button @click="navbarToggle" :class="isNavbarOpen ? 'active' : ''"
                         class="navbar-toggler focus:outline-none block lg:hidden" type="button" data-toggle="collapse"
