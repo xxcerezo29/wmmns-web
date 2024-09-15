@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BackupController;
 use App\Http\Controllers\ComplaintsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DriversController;
@@ -38,6 +39,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/truck-edit/{id}', [TrucksController::class, 'edit'])->name('trucks.edit');
         Route::delete('/truck-delete/{id}', [TrucksController::class, 'destroy'])->name('trucks.delete');
         Route::get('/truck-show/{id}', [TrucksController::class, 'show'])->name('trucks.show');
+    });
+
+    Route::prefix('backup')->group(function () {
+        Route::get('/', [BackupController::class, 'list'])->name('backup.list');
+        Route::get('/now', [BackupController::class, 'backup'])->name('backup.now');
+        Route::get('/download/{filename}', [BackupController::class, 'download'])->name('backup.download');
     });
 
     Route::prefix('routes')->group(function() {

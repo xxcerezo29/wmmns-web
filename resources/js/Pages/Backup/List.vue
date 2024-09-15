@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { EyeIcon, PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
+import { ArrowDownTrayIcon, EyeIcon, PencilIcon, PlusCircleIcon, TrashIcon } from '@heroicons/vue/24/outline';
 
-import AddForm from './Partials/AddForm.vue';
-import { paginated } from '../types/interface';
-import { User } from '../types';
+import { paginated, Truck } from '../types/interface';
 import { useToast } from 'vue-toastification';
 import { onMounted, ref } from 'vue';
 import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
@@ -15,17 +13,19 @@ import LinkButton from '@/Components/ui/daisyUI/LinkButton.vue';
 import Pagination from '@/Components/ui/daisyUI/Pagination.vue';
 
 const props = defineProps<{
-    users: paginated<User>
+    files: Array<{
+        name: string;
+        date: string;
+    }>;
 }>();
 
 const toast = useToast();
-
 const targetToDelete = ref();
 const searchTerm = ref("");
 
 const search = () => {
     router.get(
-        route("users.all.list"),
+        route("trucks.list"),
         {
             searchTerm: searchTerm.value,
         },
@@ -38,7 +38,7 @@ const search = () => {
 
 const handleDelete = () => {
     const deleteForm = useForm({});
-    deleteForm.delete(route('users.all.delete', { id: targetToDelete.value }),
+    deleteForm.delete(route('trucks.delete', { id: targetToDelete.value }),
         {
             onSuccess: () => {
                 toast.success('Driver Deleted.');
@@ -61,11 +61,11 @@ onMounted(() => {
 </script>
 <template>
 
-    <Head title="Users" />
+    <Head title="Truck" />
 
     <AuthenticatedLayout>
         <template #mobileMenuName>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Users</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Truck</h2>
         </template>
 
         <div class="py-12">
@@ -75,10 +75,6 @@ onMounted(() => {
                         <input type="text" placeholder="Search..." class="input input-bordered w-full max-w-xs"
                             @keyup="search" v-model="searchTerm" />
                     </div>
-                    <Link :href="route('users.all.create')"
-                        class="disabled:text-gray-500 inline-flex hover:border-transparent items-center px-4 py-3 btn bg-slate-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-kwikweb dark:hover:bg-white focus:bg-kwikweb-200 dark:focus:bg-white active:bg-kwikweb-900 dark:active:bg-gray-300 focus:outline-none focus:ring-offset-2 transition ease-in-out duration-150">
-                    <PlusCircleIcon class="h-7" />Add User</Link>
-
                 </div>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5">
                     <div class="p-6 text-gray-900">
@@ -87,48 +83,50 @@ onMounted(() => {
                                 <thead>
                                     <tr>
                                         <th></th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Barangay</th>
-                                        <th>Roles</th>
+                                        <th>File</th>
+                                        <th>Date</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(user, index) in props.users.data">
+                                    <tr v-if="props.files.length > 0" v-for="(file, index) in props.files">
                                         <td>{{ index + 1 }}</td>
-                                        <td>{{ user.firstname }} {{ user.lastname }}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>{{ user.barangay }}</td>
-                                        <td>
-                                            <span v-for="(role, index) in user.roles.slice(0, 3)" :key="index">
-                                                {{ role.name }} <br>
-                                            </span>
-                                        </td>
+                                        <td>{{ file.name }}</td>
+                                        <td>{{ file.date }}</td>
                                         <td>
                                             <div class="flex gap-2">
-                                                <Link
-                                                    class="inline-flex items-center btn px-4 py-3 text-white bg-green-600 dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-green-400 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150"
-                                                    :href="route('users.all.edit', { id: user.id })">
-                                                <PencilIcon class="h-4" />
-                                                </Link>
-                                                <LinkButton class="!bg-blue-600"
-                                                    :href="route('users.show', { id: user.id })" label="">
+                                                <a :href="route('backup.download', {
+                                                    filename: file.name,
+                                                })
+                                                    " class="p-2 text-blue-600 tooltip" data-tip="Download Zip">
+                                                    <ArrowDownTrayIcon class="h-5" />
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- <tr v-for="(truck, index) in props.trucks.data">
+                                        <td>{{ index+1 }}</td>
+                                        <td>{{ truck.plate_number}}</td>
+                                        <td>{{ truck.barangay }}</td>
+                                        <td>
+                                            <div class="flex gap-2">
+                                                <LinkButton class="!bg-green-600" :href="route('trucks.edit', {id: truck.id})" label="">
+                                                    <template #icon>
+                                                        <PencilIcon class="h-4" />
+                                                    </template>
+                                                </LinkButton>
+                                                <LinkButton class="!bg-blue-600" :href="route('trucks.show', {id: truck.id})" label="">
                                                     <template #icon>
                                                         <EyeIcon class="h-4" />
                                                     </template>
                                                 </LinkButton>
-                                                <SecondaryButton :disabled="$page.props.auth.user.id === user.id"
-                                                    @click="targetToDelete = user.id" onclick="deleteModal.showModal()"
-                                                    class="!bg-red-600 text-white">
-                                                    <TrashIcon class="h-4" />
-                                                </SecondaryButton>
+                                                <SecondaryButton @click="targetToDelete = truck.id" onclick="deleteModal.showModal()" class="!bg-red-600 text-white"> <TrashIcon class="h-4" /> </SecondaryButton>
                                             </div>
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                 </tbody>
                             </table>
-                            <Pagination :paginate="props.users" />
+                            <!-- <Pagination :paginate="props.trucks" /> -->
                         </div>
                     </div>
                 </div>
