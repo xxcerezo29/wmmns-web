@@ -60,6 +60,11 @@ const searchKeyword: Ref<string> = ref("");
                                         {{
                                             $page.props.auth.user.firstname.toLocaleLowerCase()
                                         }}
+
+                                        {{
+                                            $page.props.auth.user.lastname.toLocaleLowerCase()
+                                        }}
+
                                     </h4>
                                     <!-- <p class="capitalize">{{ $page.props.auth.user.roles[0].name}}</p> -->
                                 </div>
