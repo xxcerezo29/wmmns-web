@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ComplaintsController extends Controller
 {
@@ -22,17 +23,30 @@ class ComplaintsController extends Controller
             ],
             'location' => 'required_if:report_type,illegal_dumping|string',
             'description' => 'required|string',
-            'photo_url.*' => 'nullable|image|max:2048'
+            'photo_urls.*' => 'nullable|image|max:2048'
         ]);
 
         DB::beginTransaction();
         try {
 
             $photoUrls = [];
-            if ($request->hasFile('photo_urls')) {
-                foreach ($request->file('photo_urls') as $file) {
-                    $path = $file->store('complaints/photos', 'public'); // Store the photo
-                    $photoUrls[] = $path;
+            if ($request->photo_urls) {
+                foreach ($request->photo_urls as $base64Image) {
+                    
+                    if (preg_match('/^data:image\/(\w+);base64,/', $base64Image, $type))
+                    {
+                        $data = substr($base64Image, strpos($base64Image, ',') + 1);
+                        
+                        $data = base64_decode($data);
+                        
+                        $extension = $type[1];
+                        
+                        $filename = uniqid() . '.' . $extension;
+                        
+                        Storage::disk('public')->put('complaints/photos/' . $filename, $data);
+                        
+                        $photoUrls[] = 'complaints/photos/' . $filename;
+                    }
                 }
             }
 

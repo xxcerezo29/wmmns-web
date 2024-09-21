@@ -14,7 +14,7 @@ class RoutePlanController extends Controller
         $routes = Route::when($request->searchTerm, function ($query, $searchTerm) {
             return $query->where('name', 'like', '%' . $searchTerm . '%')
                 ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
-        })->paginate(10);
+        })->paginate(10)->withQueryString();
         return Inertia::render('Routes/List', [
             'routes' => $routes
         ]);

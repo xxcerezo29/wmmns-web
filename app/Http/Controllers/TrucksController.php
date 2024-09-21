@@ -19,7 +19,7 @@ class TrucksController extends Controller
             $trucks = Truck::when($request->searchTerm, function ($query, $searchTerm) {
                 return $query->where('plate_number', 'like', '%' . $searchTerm . '%')
                     ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
-            })->paginate(10);
+            })->paginate(10)->withQueryString();
         else
             $trucks = Truck::when($request->searchTerm, function ($query, $searchTerm) {
                 return $query->where('plate_number', 'like', '%' . $searchTerm . '%')

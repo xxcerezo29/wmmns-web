@@ -17,7 +17,8 @@ class ComplaintsController extends Controller
             $complaints = Report::when($request->searchTerm, function ($query, $searchTerm) {
                 return $query->where('reference_number', 'like', '%' . $searchTerm . '%')
                     ->orWhere('report_type', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
             })->when('schedule', function($query){
                 return $query->with('schedule.truck')->with('schedule.route');
             })->with('resident')->with('schedule')->paginate(10)->withQueryString();
@@ -25,7 +26,8 @@ class ComplaintsController extends Controller
             $complaints = Report::when($request->searchTerm, function ($query, $searchTerm) {
                 return $query->where('reference_number', 'like', '%' . $searchTerm . '%')
                     ->orWhere('report_type', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('description', 'like', '%' . $searchTerm . '%');
             })->where('barangay', $user->barangay)->with('resident')->with('schedule')->when('schedule', function($query){
                 return $query->with('schedule.truck')->with('schedule.route');
             })->paginate(10)->withQueryString();
