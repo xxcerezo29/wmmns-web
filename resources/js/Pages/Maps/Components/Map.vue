@@ -9,7 +9,7 @@ import Pusher, { Channel } from 'pusher-js';
 
 const mapContainer = ref<HTMLElement | null>(null);
 let map: L.Map | null = null;
-const driverMarkers: Map<number, L.Marker> = new Map();
+const driverMarkers: Map<number, { marker: L.Marker, timeoutId: ReturnType<typeof setTimeout> }> = new Map();
 
 let pusher: Pusher | null = null;
 let channel: Channel | null = null;
@@ -27,17 +27,32 @@ const updateDriverLocation = (driverId: number, location: { lat: number; lng: nu
     }
     const _driver = L.latLng(location);
 
-    if (driverMarkers.has(driverId)) {
-        const marker = driverMarkers.get(driverId);
-        if (marker) {
-            marker.setLatLng(_driver).bindPopup(`<b>Plate Number:</b> ${plateNumber}`).openPopup();
-        }
-    } else {
+    const existingDriverData = driverMarkers.get(driverId);
+
+    if(existingDriverData){
+        const {marker, timeoutId} = existingDriverData;
+        clearTimeout(timeoutId);
+        marker.setLatLng(_driver).bindPopup(`<b>Plate Number:</b> ${plateNumber}`).openPopup();
+
+        const newTimeoutId = setTimeout(() => {
+            marker.remove();
+            driverMarkers.delete(driverId);
+            console.log(`Removed marker for driver ${driverId} due to inactivity.`);
+        }, 30000)
+
+        driverMarkers.set(driverId, {marker, timeoutId: newTimeoutId});
+    }else{
         const marker = L.marker(_driver)
             .bindPopup(`<b>Plate Number:</b> ${plateNumber}`)
             .addTo(map!);
         marker.openPopup(); // Automatically opens the popup when the marker is added
-        driverMarkers.set(driverId, marker);
+
+        const timeoutId = setTimeout(() => {
+            marker.remove();
+            driverMarkers.delete(driverId);
+            console.log(`Removed marker for driver ${driverId} due to inactivity.`);
+        }, 30000)
+        driverMarkers.set(driverId, {marker, timeoutId});
     }
 };
 
@@ -50,16 +65,16 @@ onMounted(() => {
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(map);
 
-        pusher = new Pusher('2b9e426ef902f27d56e7', {
-            cluster: 'ap1',
+        pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
+            cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
         })
 
         channel = pusher.subscribe('track-garbage-truck');
 
         channel.bind('TrackGarbageTruckWeb', (data: { location: { lat: number; lng: number }, truck: any, user: Driver }) => {
-        updateDriverLocation(data.user.id, { lat: data.location.lat, lng: data.location.lng }, data.truck.plate_number);
-        console.log('Received data:', data);
-    });
+            updateDriverLocation(data.user.id, { lat: data.location.lat, lng: data.location.lng }, data.truck.plate_number);
+            console.log('Received data:', data);
+        });
     }
 })
 </script>

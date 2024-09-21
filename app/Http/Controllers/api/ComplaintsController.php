@@ -36,18 +36,31 @@ class ComplaintsController extends Controller
                 }
             }
 
-            $report = Report::create([
-                'reference_number' => 'RPT-' . strtoupper(uniqid()),
-                'resident_id' => Auth::user()->id,
-                'schedule_id' => $request->schedule_id ?? null,
-                'report_type' => $request->report_type,
-                'location' => $request->location,
-                'barangay' => Auth::user()->barangay,
-                'description' => $request->description,
-                'status' => 'pending',
-                'photo_url' => json_encode($photoUrls),
-            ]);
-
+            if($request->report_type === 'missed_collection')
+            {
+                $report = Report::create([
+                    'reference_number' => 'RPT-' . strtoupper(uniqid()),
+                    'resident_id' => Auth::user()->id,
+                    'schedule_id' => $request->schedule_id,
+                    'report_type' => $request->report_type,
+                    'barangay' => Auth::user()->barangay,
+                    'description' => $request->description,
+                    'status' => 'pending',
+                    'photo_url' => json_encode($photoUrls),
+                ]);
+            }else{
+                $report = Report::create([
+                    'reference_number' => 'RPT-' . strtoupper(uniqid()),
+                    'resident_id' => Auth::user()->id,
+                    'report_type' => $request->report_type,
+                    'location' => $request->location,
+                    'barangay' => Auth::user()->barangay,
+                    'description' => $request->description,
+                    'status' => 'pending',
+                    'photo_url' => json_encode($photoUrls),
+                ]);
+            }
+            
             DB::commit();
 
             return response()->json([
