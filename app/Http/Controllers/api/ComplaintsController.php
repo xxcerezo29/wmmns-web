@@ -23,7 +23,7 @@ class ComplaintsController extends Controller
             ],
             'location' => 'required_if:report_type,illegal_dumping|string',
             'description' => 'required|string',
-            'photo_urls.*' => 'nullable|image|max:2048'
+            'photo_urls.*' => 'nullable'
         ]);
 
         DB::beginTransaction();

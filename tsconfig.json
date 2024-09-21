@@ -16,8 +16,9 @@
       "@/*": ["./resources/js/*"],
       "ziggy-js": ["./vendor/tightenco/ziggy"]
     },
-    "types": ["vite/client"],
-     
+    "typeRoots": [
+          "./node_modules/@types"
+        ]
   },
   "include": ["resources/js/**/*.ts", "resources/js/**/*.d.ts", "resources/js/**/*.vue"],
   "exclude": ["node_module", "public"]
