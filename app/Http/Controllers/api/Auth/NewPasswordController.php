@@ -62,7 +62,7 @@ class NewPasswordController extends Controller
         }
 
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Password has been reset successfully.',
         ], 200);
     }

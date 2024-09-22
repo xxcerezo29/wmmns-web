@@ -54,7 +54,7 @@ class PasswordResetLinkController extends Controller
             Notification::send($user, new ResetPasswordOtp($otp->token));
 
             return response()->json([
-                'status' => 'success',
+                'success' => true,
                 'message' => 'OTP sent to your email.'
             ], 200);
         }catch(Exception $e){

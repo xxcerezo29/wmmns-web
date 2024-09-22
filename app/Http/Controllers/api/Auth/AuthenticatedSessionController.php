@@ -22,30 +22,35 @@ class AuthenticatedSessionController extends Controller
             'type' => 'required',
         ]);
 
-        if($request->type === 'resident')
+        if ($request->type === 'resident')
             $user = Resident::where('email', $request->email)->firstOrFail();
-        else if($request->type === 'driver')
+        else if ($request->type === 'driver')
             $user = Driver::where('email', $request->email)->firstOrFail();
 
-        if(Hash::check($request->password, $user->password)){
+        if (Hash::check($request->password, $user->password)) {
             Auth::login($user);
-            
+
             $token = $user->createToken('auth_token')->plainTextToken;
-    
+
             return response()->json([
+                'success' => true,
                 'access_token' => $token,
                 'token_type' => 'Bearer',
                 'user' => $user,
                 'type' => $request->type,
             ]);
-        }else{
-            return response()->json(['message'=> 'Invalid credentials'], 401);
+        } else {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Invalid credentials'
+                ],
+                401
+            );
         }
     }
 
-    public function user(Request $request){
-        
-    }
+    public function user(Request $request) {}
 
     /**
      * Destroy an authenticated session.
@@ -54,6 +59,6 @@ class AuthenticatedSessionController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['success' => true, 'message' => 'Successfully logged out']);
     }
 }
