@@ -1,7 +1,7 @@
 name: Deploy WMMNS
 
 env:
-  FTP_HOST: 35.240.198.68
+  FTP_HOST: 34.124.169.206
   FTP_USERNAME: ftp_wmmns
   FTP_PASSWORD: '@_Cerezo0129'
   DB_CON: mysql
