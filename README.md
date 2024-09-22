@@ -1,66 +1,143 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Waste Management with Mobile Notification System for CENRO
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project comprises both a **web application** and a **mobile application** to streamline the waste management process in Santiago City. The system optimizes garbage collection schedules, monitors garbage truck routes, and improves communication between CENRO officials, barangay officials, garbage truck drivers, and residents.
 
-## About Laravel
+## Table of Contents
+1. [Introduction](#introduction)
+2. [System Features](#system-features)
+3. [Technologies Used](#technologies-used)
+4. [Web Application](#web-application)
+   - [Installation](#installation)
+   - [Configuration](#configuration)
+   - [Usage](#usage)
+   - [API Endpoints](#api-endpoints)
+5. [Mobile Application](#mobile-application)
+   - [Installation](#mobile-installation)
+   - [Configuration](#mobile-configuration)
+   - [Usage](#mobile-usage)
+6. [License](#license)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Introduction
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The **Waste Management with Mobile Notification System for CENRO** provides both a web and mobile platform to improve waste management in Santiago City. It addresses several problems like missed collection hours, redundant routes, poor communication, and lack of tracking for garbage truck itineraries.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## System Features
 
-## Learning Laravel
+- **Real-time tracking** of garbage trucks and optimization of routes.
+- **Centralized waste management** system for waste collection and disposal.
+- **Communication platform** for residents, truck drivers, barangay officials, and CENRO.
+- **Spatial mapping** to track and manage waste complaints in various barangays.
+- **Mobile notifications** for real-time garbage collection schedules and updates.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Technologies Used
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Web Application:
+- **Laravel Framework** (PHP)
+- **Vue.js** (Frontend)
+- **Inertia.js** (SPA bridging Laravel and Vue)
+- **MySQL** (Database)
+- **Leaflet.js** (Interactive maps)
+- **Tailwind CSS** (CSS framework)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+# Web Application
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Installation
 
-### Premium Partners
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/FutureProgrammer-Inc/wmmns.git
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+2. **Install Dependencies**:
+    ```bash
+    composer install
+    npm install
 
-## Contributing
+3. **Configure Environment variables**
+    ```bash
+    cp .env.example .env
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. **Generate application key**:
+    ```bash
+    php artisan key:generate
 
-## Code of Conduct
+5. **Setup database**: Update `.env`    file with your database details
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=your_database_name
+    DB_USERNAME=your_username
+    DB_PASSWORD=your_password
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+6. **Run migrations**:
+    ```bash
+    php artisan migrate --seed
 
-## Security Vulnerabilities
+7. **Compile assets**:
+    ```bash
+    npm install && npm run dev
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+8. **Serve the application**:
+    ```bash 
+    php artisan serve
+
+### Configuration
+- **API and Notification Integration**: Configure your `.env` file with API keys for notification (used: Firebase).
+- **Leaflet.js**: Ensure proper configuration for mapping garbage truck routes in the frontend.
+
+### Usage
+#### User roles and features:
+- **CENRO Administrators**: Manage users, routes, schedules, generate reports, monitor trucks.
+- **Barangay Officials**: Manage route plans, monitor reports, track garbage truck itineraries.
+- **Garbage Truck Drivers**: View assigned routes, collection schedules, and track route progress.
+
+### API Endpoints
+#### Authentication
+- `POST /api/login`: Authenticate users
+- `POST /api/register`: Users Registration
+- `POST /api/forgot-password`: Forgot Password
+- `POST /api/reset-password`: Reseting Password
+- `POST /api/password`: Updating Password
+- `POST /api/logout`: Log out user
+- `GET /api/user`: Check Authenticated User
+
+#### Complaint
+- `POST /api/complaints/file/store`: Storing Complaints
+- `GET /api/complaints/show/{reference_number}`: Get Complaint Details by Reference ID
+- `GET /api/complaints/`: Get Complaints List
+
+#### Route
+- `GET /api/routes/`: Get Route List
+- `GET /api/routes/{id}`: Get Route Details by ID
+- `GET /api/routes/get-by-barangay/{barangay}`: Get Route List by Barangay
+
+#### Roam
+- `POST /api/roams/start`: Start Roaming
+- `POST /api/roams/end/{id}`: Stop Roaming
+- `POST /api/roams/cancel/{id}`: Cancel Roaming
+- `POST /api/roams/location/update`: Send Driver Location to server
+
+#### Schedule
+- `GET /api/schedule/`: Get schedule list
+- `GET /api/schedule/get-by-id/{id}`: Get Schedule by id
+- `GET /api/schedule/get-by-user/{id}`: Get Schedule by user
+- `GET /api/schedule/get-by-truck/{id}`: Get Schedule by truck
+- `GET /api/schedule/get-by-day/{day}`: Get Schedule by day (eg. `monday, tuesday...`)
+- `GET /api/schedule/get-trucks-today`: Get Trucks that have schedule today
+
+#### User
+- `POST /api/profile/driver`: Update Driver Profile
+- `POST /api/profile/resident`: Update Resident Profile
+
+---
+
+# Mobile Application
+
+
+https://github.com/FutureProgrammer-Inc/wmmns-mobile
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
