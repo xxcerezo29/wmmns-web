@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\api\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\api\Auth\NewPasswordController;
 use App\Http\Controllers\api\Auth\PasswordController;
+use App\Http\Controllers\api\Auth\PasswordResetLinkController;
 use App\Http\Controllers\api\Auth\RegisteredUserController;
 use App\Http\Controllers\api\Auth\VerifyEmailController;
 use App\Models\Driver;
@@ -15,6 +17,8 @@ use function PHPSTORM_META\type;
 Route::middleware('guest')->group(function () {
     Route::post('register', [RegisteredUserController::class, 'store']);
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'store']);
+    Route::post('reset-password', [NewPasswordController::class, 'store']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
