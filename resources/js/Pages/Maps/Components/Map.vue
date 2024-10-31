@@ -1,11 +1,21 @@
 <script setup lang="ts">
 import 'leaflet/dist/leaflet.css';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
 import L from 'leaflet';
 import { onMounted, ref } from 'vue';
 import { Driver } from '@/types/interface';
 import { usePage } from '@inertiajs/vue3';
 import Pusher, { Channel } from 'pusher-js';
 
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
 
 const mapContainer = ref<HTMLElement | null>(null);
 let map: L.Map | null = null;
