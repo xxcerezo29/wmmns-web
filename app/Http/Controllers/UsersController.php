@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserPasswordMail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -10,8 +11,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Illuminate\Validation\Rules;
+use Mail;
 use Spatie\Permission\Models\Role;
 
+use Str;
 use function PHPUnit\Framework\isEmpty;
 
 class UsersController extends Controller
@@ -113,24 +116,29 @@ class UsersController extends Controller
             'lastname' => 'required|string|max:255',
             'barangay' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'roles' => 'nullable|array'
         ]);
 
         DB::beginTransaction();
         try {
+
+            $generatedPassword = Str::random(12);
+
             $user = User::create([
                 'firstname' => $request->firstname,
                 'middlename' => $request->middlename,
                 'lastname' => $request->lastname,
                 'barangay' => $request->barangay,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($generatedPassword),
             ]);
 
-            if (!isEmpty($request->roles)) {
+
+            if (isset($request->roles) && !empty($request->roles)) {
                 $user->assignRole($request->roles);
             }
+
+            Mail::to($user->email)->send(new UserPasswordMail($user, $generatedPassword));
 
             DB::commit();
 
@@ -138,7 +146,6 @@ class UsersController extends Controller
         } catch (Exception $e) {
 
             DB::rollBack();
-            dd('test');
 
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }

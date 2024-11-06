@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserPasswordMail;
 use App\Models\Driver;
 use App\Models\Truck;
 use Exception;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Illuminate\Validation\Rules;
+use Mail;
+use Str;
 
 class DriversController extends Controller
 {
@@ -139,6 +142,7 @@ class DriversController extends Controller
         DB::beginTransaction();
         try {
             $barangay = '';
+            $generatedPassword = Str::random(12);
             if (Auth::user()->hasRole('admin')) {
                 $barangay = $request->barangay;
             } else {
@@ -153,8 +157,10 @@ class DriversController extends Controller
                 'email' => $request->email,
                 'truck_id' => $request->truck_id,
                 'mobile_number' => $request->mobile_number,
-                'password' => Hash::make('password'),
+                'password' => Hash::make($generatedPassword),
             ]);
+
+            Mail::to($driver->email)->send(new UserPasswordMail($driver, $generatedPassword));
 
             DB::commit();
 
@@ -182,14 +188,15 @@ class DriversController extends Controller
         }
     }
 
-    public function downloadPDF(){
-        try{
+    public function downloadPDF()
+    {
+        try {
             $user = Auth::user();
             if ($user->hasRole('admin'))
                 $drivers = Driver::with('AssignedTruck')->get();
             else
                 $drivers = Driver::where('barangay', $user->barangay)->with('AssignedTruck')->get();
-            
+
             $pdf = app('dompdf.wrapper');
             $pdf->getDomPDF()->set_option("enable_php", true);
             $pdf->getDomPDF()->set_option("isRemoteEnabled", true);
@@ -198,7 +205,7 @@ class DriversController extends Controller
 
             return $pdf->download('DriverList.pdf');
 
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }

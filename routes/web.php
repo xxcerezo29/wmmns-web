@@ -30,9 +30,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::prefix('trucks')->group(function(){
+    Route::prefix('trucks')->group(function () {
         Route::get('/all', [TrucksController::class, 'list'])->name('trucks.list');
         Route::get('/truck-create', [TrucksController::class, 'create'])->name('trucks.create');
         Route::post('/truck-create', [TrucksController::class, 'store'])->name('trucks.store');
@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/download/{filename}', [BackupController::class, 'download'])->name('backup.download');
     });
 
-    Route::prefix('routes')->group(function() {
+    Route::prefix('routes')->group(function () {
         Route::get('/', [RoutePlanController::class, 'list'])->name('routes.list');
         Route::get('/route-create', [RoutePlanController::class, 'create'])->name('routes.create');
         Route::post('/route-create', [RoutePlanController::class, 'store'])->name('routes.store');
@@ -58,13 +58,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/route-show/{id}', [RoutePlanController::class, 'show'])->name('routes.show');
     });
 
-    Route::prefix('schedule')->group(function(){
-        Route::get('/', [GarbageCollectionScheduleController::class,'list'])->name('schedule.calendar');
-        Route::get('/schedule-create', [GarbageCollectionScheduleController::class,'create'])->name('schedule.create');
-        Route::get('/schedule-view/{id}', [GarbageCollectionScheduleController::class,'show'])->name('schedule.show');
-        Route::get('/schedule-edit/{id}', [GarbageCollectionScheduleController::class,'edit'])->name('schedule.edit');
-        Route::post('/schedule-edit/{id}', [GarbageCollectionScheduleController::class,'update'])->name('schedule.update');
-        Route::post('/schedule-create', [GarbageCollectionScheduleController::class,'store'])->name('schedule.store');
+    Route::prefix('schedule')->group(function () {
+        Route::get('/', [GarbageCollectionScheduleController::class, 'list'])->name('schedule.calendar');
+        Route::get('/schedule-create', [GarbageCollectionScheduleController::class, 'create'])->name('schedule.create');
+        Route::get('/schedule-view/{id}', [GarbageCollectionScheduleController::class, 'show'])->name('schedule.show');
+        Route::get('/schedule-edit/{id}', [GarbageCollectionScheduleController::class, 'edit'])->name('schedule.edit');
+        Route::post('/schedule-edit/{id}', [GarbageCollectionScheduleController::class, 'update'])->name('schedule.update');
+        Route::post('/schedule-create', [GarbageCollectionScheduleController::class, 'store'])->name('schedule.store');
         Route::get('/schedule-list', [GarbageCollectionScheduleController::class, 'downloadPDF'])->name('schedule.pdf');
     });
 
@@ -78,19 +78,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/user-show/{id}', [UsersController::class, 'show'])->name('users.show');
         Route::get('/users-list', [UsersController::class, 'downloadPDF'])->name('users.pdf');
 
-        Route::prefix('residents')->group(function(){
+        Route::prefix('residents')->group(function () {
             Route::get('/', [ResidentsController::class, 'list'])->name('users.residents.list');
             Route::get('/resident-show/{id}', [ResidentsController::class, 'show'])->name('users.residents.show');
             Route::get('/drivers-list', [ResidentsController::class, 'downloadPDF'])->name('users.residents.pdf');
         });
 
-        Route::prefix('drivers')->group(function(){
+        Route::prefix('drivers')->group(function () {
             Route::get('/', [DriversController::class, 'list'])->name('users.drivers.list');
-            Route::get('/driver-create', [DriversController::class,'create'])->name('users.drivers.create');
-            Route::post('/driver-create', [DriversController::class,'store'])->name('users.drivers.store');
-            Route::get('/driver-update/{id}', [DriversController::class,'edit'])->name('users.drivers.edit');
-            Route::post('/driver-update/{id}', [DriversController::class,'update'])->name('users.drivers.update');
-            Route::delete('/driver-delete/{id}', [DriversController::class,'destroy'])->name('users.drivers.delete');
+            Route::get('/driver-create', [DriversController::class, 'create'])->name('users.drivers.create');
+            Route::post('/driver-create', [DriversController::class, 'store'])->name('users.drivers.store');
+            Route::get('/driver-update/{id}', [DriversController::class, 'edit'])->name('users.drivers.edit');
+            Route::post('/driver-update/{id}', [DriversController::class, 'update'])->name('users.drivers.update');
+            Route::delete('/driver-delete/{id}', [DriversController::class, 'destroy'])->name('users.drivers.delete');
             Route::get('/driver-show/{id}', [DriversController::class, 'show'])->name('users.drivers.show');
             Route::get('/drivers-list', [DriversController::class, 'downloadPDF'])->name('users.drivers.pdf');
         });
@@ -104,7 +104,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/delete/{id}', [RolesController::class, 'delete'])->name('users.roles.delete');
         });
 
-        Route::prefix('permissions')->group(function(){
+        Route::prefix('permissions')->group(function () {
             Route::get('/', [PermissionsController::class, 'list'])->name('users.permissions.list');
             Route::get('/create', [PermissionsController::class, 'create'])->name('users.permissions.create');
             Route::get('/edit/{id}', [PermissionsController::class, 'edit'])->name('users.permissions.edit');
@@ -114,7 +114,7 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::prefix('complaints')->group(function(){
+    Route::prefix('complaints')->group(function () {
         Route::get('/', [ComplaintsController::class, 'list'])->name('complaints.list');
         Route::get('/view/{reference_number}', [ComplaintsController::class, 'view'])->name('complaints.view');
         // Route::post('/update/{reference_number}', [ComplaintsController::class, 'update_status'])->name('complaints.update');
@@ -124,11 +124,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/complaints-list', [ComplaintsController::class, 'downloadPDF'])->name('complaints.pdf');
     });
 
-    Route::prefix('spatial-map')->group(function(){
+    Route::prefix('spatial-map')->group(function () {
         Route::get('/', [SpatialMapController::class, 'view'])->name('spatial-map.view');
         Route::post('/reports', [SpatialMapController::class, 'downloadPDF'])->name('spatial-map.pdf');
     });
-    Route::prefix('map')->group(function(){
+    Route::prefix('map')->group(function () {
         Route::get('/', [MapController::class, 'view'])->name('roam-map.view');
     });
 

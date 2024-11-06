@@ -1,20 +1,13 @@
 name: Deploy WMMNS
 
 env:
-  FTP_HOST: 34.124.169.206
-  FTP_USERNAME: ftp_wmmns
-  FTP_PASSWORD: '@_Cerezo0129'
+  FTP_HOST: 153.92.11.53
+  FTP_USERNAME: u308695494.bsit3a-pki.online
+  FTP_PASSWORD: '@_Wmmns2024'
   DB_CON: mysql
-  DB_USER: sql_wmmns
-  DB_NAME: sql_wmmns
-  DB_PASS: '@_Cerezo0129'
-  DB_CON_2: mysql
-  DB_USER_2: u308695494_wmmns
-  DB_NAME_2: u308695494_wmmns
-  DB_PASS_2: Wmmns2024
-  FTP_HOST_2: nc-cit.org
-  FTP_USERNAME_2: u308695494.bsit3a-pki.online
-  FTP_PASSWORD_2: Wmmns2024
+  DB_USER: u308695494_wmmns
+  DB_NAME: u308695494_wmmns
+  DB_PASS: '@_Wmmns2024'
 
 on:
   release:
