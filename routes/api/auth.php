@@ -43,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware('throttle:6,1');
-    Route::get('verify-email', VerifyEmailController::class);
-    Route::post('password' , [PasswordController::class, 'update']);
+    Route::post('verify-email', VerifyEmailController::class);
+    Route::post('password', [PasswordController::class, 'update']);
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
 });

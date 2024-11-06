@@ -17,32 +17,35 @@ class VerifyEmailController extends Controller
 
         $user = $request->user();
 
-        if($user->hasVerifiedEmail()){
+        if ($user->hasVerifiedEmail()) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Email already verified',
             ], 200);
         }
-        
+
         $otp = (new Otp)->validate($user->email, $request->code);
 
-        if($otp->status === true){
+        if ($otp->status === true) {
 
-            if($request->user()->markEmailAsVerified()){
+            if ($request->user()->markEmailAsVerified()) {
                 event(new Verified($request->user()));
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Email is verified.',
+                    'message' => 'Your email has been successfully verified.',
                 ], 200);
-            }   
-        } else{
+            }
+        } else {
             return response()->json([
                 'status' => 'error',
-                'message' => $otp->message,
-            ], 500);
+                'message' => 'Invalid OTP. Please check your code and try again.',
+            ], 400);  // Change to 400 for invalid input error
         }
 
-       
+        return response()->json([
+            'status' => 'error',
+            'message' => 'An error occurred while verifying your email. Please try again.',
+        ], 500);
     }
 }
