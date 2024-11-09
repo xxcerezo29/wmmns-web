@@ -82,6 +82,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [ResidentsController::class, 'list'])->name('users.residents.list');
             Route::get('/resident-show/{id}', [ResidentsController::class, 'show'])->name('users.residents.show');
             Route::get('/drivers-list', [ResidentsController::class, 'downloadPDF'])->name('users.residents.pdf');
+            Route::delete('/resident-delete/{id}', [ResidentsController::class, 'destroy'])->name('users.residents.destroy');
         });
 
         Route::prefix('drivers')->group(function () {

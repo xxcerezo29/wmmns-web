@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resident;
+use DB;
 use Exception;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -35,10 +36,29 @@ class ResidentsController extends Controller
         }
     }
 
-    public function downloadPDF(){
-        try{
+    public function destroy($id)
+    {
+
+        DB::beginTransaction();
+        try {
+            $resident = Resident::findOrFail($id);
+
+            $resident->delete();
+
+            DB::commit();
+
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect(route('users.residents.list'))->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
+    }
+
+    public function downloadPDF()
+    {
+        try {
             $residents = Resident::all();
-            
+
             $pdf = app('dompdf.wrapper');
             $pdf->getDomPDF()->set_option("enable_php", true);
             $pdf->getDomPDF()->set_option("isRemoteEnabled", true);
@@ -47,7 +67,7 @@ class ResidentsController extends Controller
 
             return $pdf->download('ResidentList.pdf');
 
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }
