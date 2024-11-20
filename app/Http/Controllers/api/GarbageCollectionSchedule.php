@@ -19,36 +19,43 @@ class GarbageCollectionSchedule extends Controller
         $user = Auth::user();
 
         if ($user instanceof Driver) {
-            $truck =  $user->AssignedTruck;
-            $schedules = $truck->schedule->groupBy('day')
-                ->map(function ($daySchedules) use ($truck) {
-                    return $daySchedules->sortBy('time')->map(function ($schedule) use ($truck) {
-                        return [
-                            'id' => $schedule->id,
-                            'barangay' => $schedule->barangay,
-                            'day' => $schedule->day,
-                            'truck_id' => $schedule->truck_id,
-                            'route_id' => $schedule->route_id,
-                            'time' => $schedule->time,
-                            'truck_plate' => $truck->plate_number // Add truck plate number here
-                        ];
-                    });
+            $truck = $user->AssignedTruck;
+            $schedules = CollectionSchedule::query()
+                ->with(['truck', 'route'])
+                ->where('truck_id', $user->truck_id)
+                ->orderBy('schedule')
+                ->orderBy('time')
+                ->get()
+                ->map(function ($schedule) {
+                    return [
+                        'id' => $schedule->id,
+                        'start' => Carbon::parse($schedule->schedule . ' ' . $schedule->time)->toDateTimeString(),
+                        'end' => Carbon::parse($schedule->schedule . ' ' . $schedule->time)->addHours(4)->toDateTimeString(),
+                        'title' => "Collection for " . $schedule->barangay,
+                        'icon' => 'truck',
+                        'content' => "Route: {$schedule->route->name}, Truck: {$schedule->truck->name}",
+                        'contentFull' => "Barangay: {$schedule->barangay}<br>Route: {$schedule->route->name}<br>Truck: {$schedule->truck->plate_number}<br>Time: {$schedule->time}",
+                        'class' => 'collection-schedule',
+                    ];
                 });
         } elseif ($user instanceof Resident) {
-            $schedules = CollectionSchedule::where('barangay', $user->barangay)->with('truck')->get()
-                ->groupBy('day')
-                ->map(function ($daySchedules) {
-                    return $daySchedules->sortBy('time')->map(function ($schedule) {
-                        return [
-                            'id' => $schedule->id,
-                            'barangay' => $schedule->barangay,
-                            'day' => $schedule->day,
-                            'truck_id' => $schedule->truck_id,
-                            'route_id' => $schedule->route_id,
-                            'time' => $schedule->time,
-                            'truck_plate' => $schedule->truck->plate_number ?? 'N/A' // Add truck plate number if exists
-                        ];
-                    });
+            $schedules = CollectionSchedule::query()
+                ->with(['truck', 'route'])
+                ->where('barangay', $user->barangay)
+                ->orderBy('schedule')
+                ->orderBy('time')
+                ->get()
+                ->map(function ($schedule) {
+                    return [
+                        'id' => $schedule->id,
+                        'start' => Carbon::parse($schedule->schedule . ' ' . $schedule->time)->toDateTimeString(),
+                        'end' => Carbon::parse($schedule->schedule . ' ' . $schedule->time)->addHours(4)->toDateTimeString(),
+                        'title' => "Collection for " . $schedule->barangay,
+                        'icon' => 'truck',
+                        'content' => "Route: {$schedule->route->name}, Truck: {$schedule->truck->name}",
+                        'contentFull' => "Barangay: {$schedule->barangay}<br>Route: {$schedule->route->name}<br>Truck: {$schedule->truck->plate_number}<br>Time: {$schedule->time}",
+                        'class' => 'collection-schedule',
+                    ];
                 });
         } else {
             return response()->json([
@@ -95,10 +102,10 @@ class GarbageCollectionSchedule extends Controller
     public function getTrucksForToday()
     {
         $user = Auth::user();
-        $today = Carbon::now()->format('l');
+        $today = Carbon::now()->toDateString();
 
-        $schedules = CollectionSchedule::where('day', $today)
-            ->where('barangay',$user->barangay )
+        $schedules = CollectionSchedule::where('schedule', $today)
+            ->where('barangay', $user->barangay)
             ->with('truck')
             ->get();
 
@@ -114,36 +121,40 @@ class GarbageCollectionSchedule extends Controller
     {
         $user = Auth::user();
 
-        if ($user instanceof Driver) 
-        {
-            $schedules = CollectionSchedule::where('barangay', $user->barangay)->where('day', $day)->where('truck_id', $user->truck_id)->with('truck')
-            ->with('route')
-            ->orderBy('time', 'asc')
-            ->get();
-        }else if($user instanceof Resident){
-            $schedules = CollectionSchedule::where('barangay', $user->barangay)->where('day', $day)->with('truck')
-            ->with('route')
-            ->orderBy('time', 'asc')
-            ->get()
-            ->map(function ($schedule) {
-                return [
-                    'id' => $schedule->id,
-                    'barangay' => $schedule->barangay,
-                    'day' => $schedule->day,
-                    'truck_id' => $schedule->truck_id,
-                    'route_id' => $schedule->route_id,
-                    'time' => $schedule->time,
-                    'truck_plate' => $schedule->truck->plate_number ?? 'N/A', // Add truck plate number if exists
-                    'route_name' => $schedule->route->name ?? ''
-                ];
-            }); 
+        if ($user instanceof Driver) {
+            $schedules = CollectionSchedule::where('barangay', $user->barangay)
+                ->where('schedule', $day)
+                ->where('truck_id', $user->truck_id)
+                ->with('truck')
+                ->with('route')
+                ->orderBy('time', 'asc')
+                ->get();
+        } else if ($user instanceof Resident) {
+            $schedules = CollectionSchedule::where('barangay', $user->barangay)
+                ->where('schedule', $day)
+                ->with('truck')
+                ->with('route')
+                ->orderBy('time', 'asc')
+                ->get()
+                ->map(function ($schedule) {
+                    return [
+                        'id' => $schedule->id,
+                        'barangay' => $schedule->barangay,
+                        'schedule' => $schedule->schedule,
+                        'truck_id' => $schedule->truck_id,
+                        'route_id' => $schedule->route_id,
+                        'time' => $schedule->time,
+                        'plate_number' => $schedule->truck->plate_number ?? 'N/A', // Add truck plate number if exists
+                        'route_name' => $schedule->route->name ?? ''
+                    ];
+                });
         } else {
             return response()->json([
                 'error' => 'Unauthorized user type'
             ], 403);
         }
 
-       
+
 
         return response()->json([
             'schedules' => $schedules
@@ -152,16 +163,18 @@ class GarbageCollectionSchedule extends Controller
 
     public function list()
     {
-        try{
+        try {
             $resident = Auth::user();
 
-            $schedules = CollectionSchedule::where('barangay', $resident->barangay)->with('truck')->with('route')->get();
+            $schedules = CollectionSchedule::where('barangay', $resident->barangay)
+                ->with('truck')
+                ->with('route')->get();
 
             return response()->json([
                 'success' => true,
                 'schedules' => $schedules
             ]);
-        }catch (Exception $e) {
+        } catch (Exception $e) {
 
             return response()->json([
                 'success' => false,

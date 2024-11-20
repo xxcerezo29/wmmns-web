@@ -23,17 +23,14 @@ class CollectionScheduleFactory extends Factory
         if (!$truck) {
             $truck = Truck::factory()->create(['barangay' => $route->barangay]);
         }
-
-        $daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-        $day = $this->faker->randomElement($daysOfWeek);
-
         $time = $this->faker->time('H:i:s');
+        $date = $this->faker->dateTimeBetween('-1 year', '+1 year')->format('Y-m-d');
         return [
             'barangay' => $route->barangay,
-            'day' => $day,
             'truck_id' => $truck->id,
             'route_id' => $route->id,
             'time' => $time, // New time field
+            'schedule' => $date,
             'created_at' => now(),
             'updated_at' => now(),
         ];

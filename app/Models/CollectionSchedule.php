@@ -14,13 +14,16 @@ class CollectionSchedule extends Model
         'day',
         'time',
         'route_id',
-        'barangay'
+        'barangay',
+        'schedule'
     ];
 
-    public function truck(){
+    public function truck()
+    {
         return $this->hasOne(Truck::class, 'id', 'truck_id');
     }
-    public function route(){
+    public function route()
+    {
         return $this->hasOne(Route::class, 'id', 'route_id');
     }
 }

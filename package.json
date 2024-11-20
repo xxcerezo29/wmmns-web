@@ -40,6 +40,7 @@
         "ol-ext": "^4.0.22",
         "terraformer": "^1.0.12",
         "terraformer-wkt-parser": "^1.2.1",
+        "vue-cal": "^4.10.0",
         "vue-chart-3": "^3.1.8",
         "vue-toastification": "^2.0.0-rc.5",
         "vue3-openlayers": "^11.1.0"

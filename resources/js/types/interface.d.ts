@@ -1,26 +1,26 @@
 export interface paginated<T> {
-    current_page: number
-        data: Array<T>;
-        first_page_url: string;
-        from: number;
-        last_page: number;
-        last_page_url: string;
-        links: Array<{
-            active: boolean;
-            label: string;
-            url: string;
-        }>;
-        next_page_ul:string;
-        path: string;
-        per_page: number;
-        prev_page_url: string;
-        to: number;
-        total: number;
+    current_page: number;
+    data: Array<T>;
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: Array<{
+        active: boolean;
+        label: string;
+        url: string;
+    }>;
+    next_page_ul: string;
+    path: string;
+    per_page: number;
+    prev_page_url: string;
+    to: number;
+    total: number;
 }
 
 export interface Schedule {
     barangay: string;
-    day: string;
+    schedule: string;
     id: number;
     route_id: number;
     time: string;
@@ -41,7 +41,7 @@ export interface Driver {
     mobile_number: string;
 }
 
-export interface Route{
+export interface Route {
     id: number;
     name: string;
     barangay: string;
@@ -56,9 +56,8 @@ export interface IChartData {
         backgroundColor: string | Array<string>;
         borderColor?: string | Array<string>;
         borderWidth?: number;
-    }>
+    }>;
 }
-
 
 export interface Truck {
     id: number;
@@ -67,7 +66,7 @@ export interface Truck {
     driver: Driver;
 }
 
-export interface Resident{
+export interface Resident {
     id: number;
     firstname: string;
     middlename: string;
@@ -84,7 +83,7 @@ export interface Resident{
 
 export interface Roles {
     id: number;
-    name:string;
+    name: string;
     permissions: Array<Permissions>;
 }
 
@@ -94,9 +93,9 @@ export interface Permissions {
 }
 
 export interface ICities {
-    code: number,
-    name: string,
-    regionCode: string,
+    code: number;
+    name: string;
+    regionCode: string;
 }
 
 export interface IComplaint {

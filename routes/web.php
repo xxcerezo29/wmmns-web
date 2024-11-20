@@ -66,6 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/schedule-edit/{id}', [GarbageCollectionScheduleController::class, 'update'])->name('schedule.update');
         Route::post('/schedule-create', [GarbageCollectionScheduleController::class, 'store'])->name('schedule.store');
         Route::get('/schedule-list', [GarbageCollectionScheduleController::class, 'downloadPDF'])->name('schedule.pdf');
+        Route::delete('/schedule-delete/{id}', [GarbageCollectionScheduleController::class, 'destroy'])->name('schedule.delete');
     });
 
     Route::prefix('users')->group(function () {

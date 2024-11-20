@@ -17,7 +17,8 @@
       "ziggy-js": ["./vendor/tightenco/ziggy"]
     },
     "typeRoots": [
-          "./node_modules/@types"
+          "./node_modules/@types",
+          "./resources/js/types"
         ]
   },
   "include": ["resources/js/**/*.ts", "resources/js/**/*.d.ts", "resources/js/**/*.vue"],
