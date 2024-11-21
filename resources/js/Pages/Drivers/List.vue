@@ -183,11 +183,11 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-        <Modal id="deleteModal" title="Role Delete Form">
+        <Modal id="deleteModal" title="Driver Delete Form">
             <template #body>
                 <div class="mt-5">
                     <span class="text-red-700"
-                        >You are about to delete this user?</span
+                        >You are about to delete this driver?</span
                     >
                 </div>
             </template>
