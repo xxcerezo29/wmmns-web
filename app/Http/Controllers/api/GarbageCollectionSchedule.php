@@ -144,6 +144,7 @@ class GarbageCollectionSchedule extends Controller
                         'truck_id' => $schedule->truck_id,
                         'route_id' => $schedule->route_id,
                         'time' => $schedule->time,
+                        'truck' => $schedule->truck,
                         'plate_number' => $schedule->truck->plate_number ?? 'N/A', // Add truck plate number if exists
                         'route_name' => $schedule->route->name ?? ''
                     ];

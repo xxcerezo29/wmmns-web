@@ -31,8 +31,8 @@ class NotifyUserSchedule extends Command
      */
     public function handle()
     {
-        $today = Carbon::now()->format('l');
-        $schedules = CollectionSchedule::where('day', $today)->get();
+        $today = Carbon::now()->toDateString();
+        $schedules = CollectionSchedule::whereDate('schedule', $today)->get();
 
         foreach ($schedules as $schedule) {
             $barangay = $schedule->barangay;
@@ -44,7 +44,7 @@ class NotifyUserSchedule extends Command
 
                 foreach ($deviceTokens as $token) {
                     // Send notification for today's schedule
-                    $this->sendNotification($token, 'Garbage Collection Schedule', 'Garbage collection is scheduled for today in your area.');
+                    $this->sendNotification($token, 'WMMNS Notification', 'Garbage collection is scheduled for today in your area.');
                 }
             }
         }
