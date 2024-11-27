@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, usePage, Link } from "@inertiajs/vue3";
+import { Head, usePage, Link, router } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { useForm } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -21,11 +21,25 @@ const form = useForm({
     route: "",
     time: "",
     barangay: usePage().props.auth.user.barangay,
+    cenro: hasRole("admin") ? true : false,
 });
 
 const toast = useToast();
 
 const barangay = ref<Array<ICities>>([]);
+
+const update = () => {
+    router.get(
+        route("schedule.create"),
+        {
+            cenro: form.cenro,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+        }
+    );
+};
 
 const submit = () => {
     form.post(route("schedule.store"), {
@@ -74,6 +88,21 @@ onMounted(() => {
                 >
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
+                            <div class="max-w-xs" v-if="hasRole('admin')">
+                                <div class="form-control max-w-xs">
+                                    <label class="label cursor-pointer">
+                                        <span class="label-text"
+                                            >For CENRO?</span
+                                        >
+                                        <input
+                                            v-model="form.cenro"
+                                            type="checkbox"
+                                            class="checkbox"
+                                            @change="update"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
                             <label class="form-control w-full max-w-xs mt-2">
                                 <div class="label">
                                     <span class="label-text">Truck</span>
@@ -156,7 +185,7 @@ onMounted(() => {
                                 >{{ form.errors.route }}</span
                             >
                             <label
-                                v-if="hasRole('admin')"
+                                v-if="hasRole('admin') && form.cenro === false"
                                 class="form-control w-full max-w-xs mt-2"
                             >
                                 <div class="label">

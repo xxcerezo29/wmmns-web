@@ -16,8 +16,10 @@ import SecondaryButton from "@/Components/ui/daisyUI/SecondaryButton.vue";
 import Modal from "@/Components/ui/daisyUI/Modal.vue";
 import Pagination from "@/Components/ui/daisyUI/Pagination.vue";
 import LinkButton from "@/Components/ui/daisyUI/LinkButton.vue";
+import { hasRole } from "@/functions";
 const props = defineProps<{
     routes: paginated<Route>;
+    show: string;
 }>();
 
 const toast = useToast();
@@ -25,12 +27,14 @@ const toast = useToast();
 const targetToDelete = ref();
 
 const searchTerm = ref("");
+const showAll = ref();
 
 const search = () => {
     router.get(
         route("routes.list"),
         {
             searchTerm: searchTerm.value,
+            show: showAll.value,
         },
         {
             preserveScroll: true,
@@ -82,6 +86,19 @@ onMounted(() => {
                             v-model="searchTerm"
                         />
                     </div>
+                    <div v-if="hasRole('admin')">
+                        <div class="form-control">
+                            <label class="label cursor-pointer">
+                                <span class="label-text mr-2">Show all</span>
+                                <input
+                                    v-model="showAll"
+                                    type="checkbox"
+                                    class="checkbox"
+                                    @change="search"
+                                />
+                            </label>
+                        </div>
+                    </div>
                     <Link
                         :href="route('routes.create')"
                         class="disabled:text-gray-500 inline-flex hover:border-transparent items-center px-4 py-3 btn bg-slate-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-kwikweb dark:hover:bg-white focus:bg-kwikweb-200 dark:focus:bg-white active:bg-kwikweb-900 dark:active:bg-gray-300 focus:outline-none focus:ring-offset-2 transition ease-in-out duration-150"
@@ -117,6 +134,13 @@ onMounted(() => {
                                                     :href="
                                                         route('routes.edit', {
                                                             id: _route.id,
+                                                            cenro: hasRole(
+                                                                'admin'
+                                                            )
+                                                                ? showAll
+                                                                    ? 'false'
+                                                                    : 'true'
+                                                                : 'false',
                                                         })
                                                     "
                                                     ><PencilIcon class="h-4"

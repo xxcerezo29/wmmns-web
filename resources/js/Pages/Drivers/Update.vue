@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, usePage, Link } from "@inertiajs/vue3";
+import { Head, usePage, Link, router } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { useForm } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -14,6 +14,7 @@ import TextInput from "@/Components/ui/daisyUI/TextInput.vue";
 const props = defineProps<{
     driver: Driver;
     trucks: Array<Truck>;
+    cenro: string;
 }>();
 
 const form = useForm({
@@ -24,6 +25,7 @@ const form = useForm({
     mobile_number: props.driver.mobile_number,
     barangay: props.driver.barangay,
     truck_id: props.driver.truck_id,
+    cenro: props.cenro === "true" ? true : false,
 });
 
 const toast = useToast();
@@ -38,6 +40,19 @@ const submit = () => {
             });
         },
     });
+};
+
+const update = () => {
+    router.get(
+        route("users.drivers.create"),
+        {
+            cenro: form.cenro,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+        }
+    );
 };
 
 onMounted(() => {
@@ -112,8 +127,24 @@ onMounted(() => {
                                 :error="form.errors.mobile_number"
                             />
 
+                            <div class="max-w-xs" v-if="hasRole('admin')">
+                                <div class="form-control max-w-xs">
+                                    <label class="label cursor-pointer">
+                                        <span class="label-text"
+                                            >For CENRO?</span
+                                        >
+                                        <input
+                                            v-model="form.cenro"
+                                            type="checkbox"
+                                            class="checkbox"
+                                            @change="update"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
                             <label
-                                v-if="hasRole('admin')"
+                                v-if="hasRole('admin') && form.cenro === false"
                                 class="form-control w-full max-w-xs mt-2"
                             >
                                 <div class="label">

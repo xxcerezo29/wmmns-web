@@ -18,6 +18,7 @@ const props = defineProps<{
 const form = useForm({
     plate_number: props.truck.plate_number,
     barangay: props.truck.barangay,
+    cenro: hasRole("admin") ? Boolean(props.truck.cenro) : false,
 });
 
 const toast = useToast();
@@ -25,7 +26,7 @@ const toast = useToast();
 const barangay = ref<Array<ICities>>([]);
 
 const submit = () => {
-    form.post(route("trucks.store"), {
+    form.post(route("trucks.update", { truck: props.truck.id }), {
         onError: () => {
             Object.values(form.errors).forEach((error) => {
                 toast.error(error);
@@ -76,8 +77,23 @@ onMounted(() => {
                                 :error="form.errors.plate_number"
                             />
 
+                            <div class="max-w-xs" v-if="hasRole('admin')">
+                                <div class="form-control max-w-xs">
+                                    <label class="label cursor-pointer">
+                                        <span class="label-text"
+                                            >For CENRO?</span
+                                        >
+                                        <input
+                                            v-model="form.cenro"
+                                            type="checkbox"
+                                            class="checkbox"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
                             <label
-                                v-if="hasRole('admin')"
+                                v-if="hasRole('admin') && form.cenro === false"
                                 class="form-control w-full max-w-xs mt-2"
                             >
                                 <div class="label">

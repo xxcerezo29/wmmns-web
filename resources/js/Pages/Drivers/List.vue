@@ -21,6 +21,7 @@ import LinkButton from "@/Components/ui/daisyUI/LinkButton.vue";
 
 const props = defineProps<{
     drivers: paginated<Driver>;
+    show: string;
 }>();
 
 const toast = useToast();
@@ -42,12 +43,14 @@ const handleDelete = () => {
     );
 };
 const searchTerm = ref("");
+const showAll = ref();
 
 const search = () => {
     router.get(
         route("users.drivers.list"),
         {
             searchTerm: searchTerm.value,
+            show: showAll.value,
         },
         {
             preserveScroll: true,
@@ -87,6 +90,19 @@ onMounted(() => {
                             v-model="searchTerm"
                         />
                     </div>
+                    <div v-if="hasRole('admin')">
+                        <div class="form-control">
+                            <label class="label cursor-pointer">
+                                <span class="label-text mr-2">Show all</span>
+                                <input
+                                    v-model="showAll"
+                                    type="checkbox"
+                                    class="checkbox"
+                                    @change="search"
+                                />
+                            </label>
+                        </div>
+                    </div>
                     <a
                         :href="route('users.drivers.pdf')"
                         target="_blank"
@@ -97,7 +113,11 @@ onMounted(() => {
                     </a>
                     <Link
                         v-if="hasRole('barangay') || hasRole('admin')"
-                        :href="route('users.drivers.create')"
+                        :href="
+                            route('users.drivers.create', {
+                                cenro: hasRole('admin') ? 'true' : 'false',
+                            })
+                        "
                         class="disabled:text-gray-500 inline-flex hover:border-transparent items-center px-4 py-3 btn bg-slate-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-kwikweb dark:hover:bg-white focus:bg-kwikweb-200 dark:focus:bg-white active:bg-kwikweb-900 dark:active:bg-gray-300 focus:outline-none focus:ring-offset-2 transition ease-in-out duration-150"
                         ><PlusCircleIcon class="h-7" />Add Driver</Link
                     >
@@ -145,7 +165,16 @@ onMounted(() => {
                                                     :href="
                                                         route(
                                                             'users.drivers.edit',
-                                                            { id: driver.id }
+                                                            {
+                                                                id: driver.id,
+                                                                cenro: hasRole(
+                                                                    'admin'
+                                                                )
+                                                                    ? showAll
+                                                                        ? 'false'
+                                                                        : 'true'
+                                                                    : 'false',
+                                                            }
                                                         )
                                                     "
                                                     ><PencilIcon class="h-4"
@@ -155,7 +184,9 @@ onMounted(() => {
                                                     :href="
                                                         route(
                                                             'users.drivers.show',
-                                                            { id: driver.id }
+                                                            {
+                                                                id: driver.id,
+                                                            }
                                                         )
                                                     "
                                                     label=""

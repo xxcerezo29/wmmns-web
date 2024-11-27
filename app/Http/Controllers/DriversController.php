@@ -20,16 +20,27 @@ class DriversController extends Controller
     public function list(Request $request)
     {
         $user = Auth::user();
-        if ($user->hasRole('admin'))
-            $drivers = Driver::when($request->searchTerm, function ($query, $searchTerm) {
-                return $query->where('firstname', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('middlename', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('email', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
-            })->with('AssignedTruck')->paginate(10)->withQueryString();
-        else
+        if ($user->hasRole('admin')) {
+            if ($request->show === "true") {
+                $drivers = Driver::when($request->searchTerm, function ($query, $searchTerm) {
+                    return $query->where('firstname', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('middlename', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('email', 'like', '%' . $searchTerm . '%');
+                })->with('AssignedTruck')->paginate(10)->withQueryString();
+            } else {
+                $drivers = Driver::when($request->searchTerm, function ($query, $searchTerm) {
+                    return $query->where('firstname', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('middlename', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('lastname', 'like', '%' . $searchTerm . '%')
+                        ->orWhere('email', 'like', '%' . $searchTerm . '%');
+                })->with('AssignedTruck')->where('barangay', 'CENRO')->paginate(10)->withQueryString();
+            }
+
+        } else {
             $drivers = Driver::with('AssignedTruck')->where('barangay', $user->barangay)->paginate(10);
+        }
+
 
         return Inertia::render('Drivers/List', [
             'drivers' => $drivers
@@ -49,12 +60,23 @@ class DriversController extends Controller
     }
 
 
-    public function create()
+    public function create(Request $request)
     {
         if (Auth::user()->hasRole('admin')) {
-            $trucks = Truck::all();
+            if ($request->cenro === 'true') {
+                $trucks = Truck::where('barangay', 'CENRO')->when($request->searchTerm, function ($query) use ($request) {
+                    return $query->where('plate_number', 'LIKE', '%' . $request->searchTerm . '%');
+                })->get();
+            } else {
+                $trucks = Truck::when($request->searchTerm, function ($query) use ($request) {
+                    return $query->where('plate_number', 'LIKE', '%' . $request->searchTerm . '%');
+                })->get();
+            }
+
         } else {
-            $trucks = Truck::where('barangay', Auth::user()->barangay)->get();
+            $trucks = Truck::where('barangay', Auth::user()->barangay)->when($request->searchTerm, function ($query) use ($request) {
+                return $query->where('plate_number', 'LIKE', '%' . $request->searchTerm . '%');
+            })->get();
         }
 
         return Inertia::render('Drivers/Create', [
@@ -62,12 +84,22 @@ class DriversController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         if (Auth::user()->hasRole('admin')) {
-            $trucks = Truck::all();
+            if ($request->cenro === 'true') {
+                $trucks = Truck::where('barangay', 'CENRO')->when($request->searchTerm, function ($query) use ($request) {
+                    return $query->where('plate_number', 'LIKE', '%' . $request->searchTerm . '%');
+                })->get();
+            } else {
+                $trucks = Truck::when($request->searchTerm, function ($query) use ($request) {
+                    return $query->where('plate_number', 'LIKE', '%' . $request->searchTerm . '%');
+                })->get();
+            }
         } else {
-            $trucks = Truck::where('barangay', Auth::user()->barangay)->get();
+            $trucks = Truck::where('barangay', Auth::user()->barangay)->when($request->searchTerm, function ($query) use ($request) {
+                return $query->where('plate_number', 'LIKE', '%' . $request->searchTerm . '%');
+            })->get();
         }
 
         try {
@@ -75,7 +107,8 @@ class DriversController extends Controller
 
             return Inertia::render('Drivers/Update', [
                 'trucks' => $trucks,
-                'driver' => $driver
+                'driver' => $driver,
+                'cenro' => $request->cenro
             ]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -94,15 +127,20 @@ class DriversController extends Controller
             'email' => 'required|string|lowercase|email|max:255|unique:drivers,email,' . $id,
             'truck_id' => 'required',
             'mobile_number' => 'required',
+            'cenro' => 'nullable'
         ]);
 
         DB::beginTransaction();
         try {
             $barangay = '';
-            if (Auth::user()->hasRole('admin')) {
-                $barangay = $request->barangay;
+            if ($request->cenro === true) {
+                $barangay = 'CENRO';
             } else {
-                $barangay = Auth::user()->barangay;
+                if (Auth::user()->hasRole('admin')) {
+                    $barangay = $request->barangay;
+                } else {
+                    $barangay = Auth::user()->barangay;
+                }
             }
 
             $driver = Driver::findOrFail($id);
@@ -115,6 +153,7 @@ class DriversController extends Controller
                 'email' => $request->email,
                 'truck_id' => $request->truck_id,
                 'mobile_number' => $request->mobile_number,
+                'cenro' => $request->cenro
             ]);
 
             DB::commit();
@@ -143,10 +182,14 @@ class DriversController extends Controller
         try {
             $barangay = '';
             $generatedPassword = Str::random(12);
-            if (Auth::user()->hasRole('admin')) {
-                $barangay = $request->barangay;
+            if ($request->cenro === true) {
+                $barangay = 'CENRO';
             } else {
-                $barangay = Auth::user()->barangay;
+                if (Auth::user()->hasRole('admin')) {
+                    $barangay = $request->barangay;
+                } else {
+                    $barangay = Auth::user()->barangay;
+                }
             }
 
             $driver = Driver::create([
@@ -158,9 +201,10 @@ class DriversController extends Controller
                 'truck_id' => $request->truck_id,
                 'mobile_number' => $request->mobile_number,
                 'password' => Hash::make($generatedPassword),
+                'cenro' => $request->cenro
             ]);
 
-            Mail::to($driver->email)->send(new UserPasswordMail($driver, $generatedPassword));
+            // Mail::to($driver->email)->send(new UserPasswordMail($driver, $generatedPassword));
 
             DB::commit();
 

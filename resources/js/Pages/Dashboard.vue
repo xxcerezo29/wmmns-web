@@ -43,17 +43,7 @@ const props = defineProps<{
                     <div class="flex w-full gap-2">
                         <LineChart :charData="props.complaintChartData" />
                     </div>
-                    <div class="p-6 text-gray-900">
-                        You're logged in as
-                        <span class="capitalize">
-                            {{
-                                $page.props.auth.roles
-                                    ? $page.props.auth.roles[0].name
-                                    : ""
-                            }}
-                        </span>
-                        !
-                    </div>
+                    <div class="p-6 text-gray-900">You're logged in!</div>
                 </div>
             </div>
         </div>

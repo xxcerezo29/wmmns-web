@@ -15,19 +15,26 @@ class TrucksController extends Controller
     public function list(Request $request)
     {
         $user = Auth::user();
-        if ($user->hasRole('admin'))
+        if ($user->hasRole('admin')) {
+            if ($request->show === "true") {
+                $trucks = Truck::when($request->searchTerm, function ($query, $searchTerm) {
+                    return $query->where('plate_number', 'like', '%' . $searchTerm . '%');
+                })->paginate(10)->withQueryString();
+            } else {
+                $trucks = Truck::when($request->searchTerm, function ($query, $searchTerm) {
+                    return $query->where('plate_number', 'like', '%' . $searchTerm . '%');
+                })->where('barangay', 'CENRO')->paginate(10)->withQueryString();
+
+            }
+        } else {
             $trucks = Truck::when($request->searchTerm, function ($query, $searchTerm) {
-                return $query->where('plate_number', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
-            })->paginate(10)->withQueryString();
-        else
-            $trucks = Truck::when($request->searchTerm, function ($query, $searchTerm) {
-                return $query->where('plate_number', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+                return $query->where('plate_number', 'like', '%' . $searchTerm . '%');
             })->where('barangay', $user->barangay)->paginate(10)->withQueryString();
+        }
 
         return Inertia::render('Trucks/List', [
-            'trucks' => $trucks
+            'trucks' => $trucks,
+            'show' => $request->show
         ]);
     }
 
@@ -62,19 +69,66 @@ class TrucksController extends Controller
         $request->validate([
             'plate_number' => 'required|string|max:255',
             'barangay' => 'required|string|max:255',
+            'cenro' => 'nullable'
         ]);
 
         DB::beginTransaction();
 
         try {
-            Truck::create([
-                'plate_number' => $request->plate_number,
-                'barangay' => $request->barangay,
-            ]);
+            if ($request->cenro === true) {
+                Truck::create([
+                    'plate_number' => $request->plate_number,
+                    'barangay' => 'CENRO',
+                    'cenro' => true
+                ]);
+            } else {
+                Truck::create([
+                    'plate_number' => $request->plate_number,
+                    'barangay' => $request->barangay,
+                    'cenro' => false
+                ]);
+            }
+
 
             DB::commit();
 
             return redirect(route('trucks.list'))->with(['message' => 'New Truck Added.', 'status' => 'success']);
+        } catch (Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
+        }
+    }
+
+    public function update(Request $request, Truck $truck)
+    {
+        $request->validate([
+            'plate_number' => 'required|string|max:255',
+            'barangay' => 'required|string|max:255',
+            'cenro' => 'nullable'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            if ($request->cenro === true) {
+                $truck->update([
+                    'plate_number' => $request->plate_number,
+                    'barangay' => 'CENRO',
+                    'cenro' => true
+                ]);
+            } else {
+                $truck->update([
+                    'plate_number' => $request->plate_number,
+                    'barangay' => $request->barangay,
+                    'cenro' => false
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect(route('trucks.list'))->with(['message' => 'Update Truck Added.', 'status' => 'success']);
         } catch (Exception $e) {
 
             DB::rollBack();
@@ -102,14 +156,15 @@ class TrucksController extends Controller
         }
     }
 
-    public function downloadPDF(){
-        try{
+    public function downloadPDF()
+    {
+        try {
             $user = Auth::user();
             if ($user->hasRole('admin'))
                 $trucks = Truck::all();
             else
                 $trucks = Truck::where('barangay', $user->barangay)->all();
-            
+
             $pdf = app('dompdf.wrapper');
             $pdf->getDomPDF()->set_option("enable_php", true);
             $pdf->getDomPDF()->set_option("isRemoteEnabled", true);
@@ -118,7 +173,7 @@ class TrucksController extends Controller
 
             return $pdf->download('TruckList.pdf');
 
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
     }

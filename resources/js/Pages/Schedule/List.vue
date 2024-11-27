@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
+import { Head, Link, router, useForm, usePage } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 import { Schedule } from "../../types/interface";
@@ -12,6 +12,7 @@ import Pagination from "@/Components/ui/daisyUI/Pagination.vue";
 
 import VueCal from "vue-cal";
 import "vue-cal/dist/vuecal.css";
+import { hasRole } from "@/functions";
 
 const props = defineProps<{
     schedule: {
@@ -29,11 +30,26 @@ const props = defineProps<{
         next_page_url: string;
         prev_page_url: string;
     };
+    show: string;
 }>();
 
 const toast = useToast();
 
 const targetToDelete = ref();
+const showAll = ref();
+
+const update = () => {
+    router.get(
+        route("schedule.calendar"),
+        {
+            show: showAll.value,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+        }
+    );
+};
 
 const handleDelete = () => {
     const deleteForm = useForm({});
@@ -88,6 +104,19 @@ onMounted(() => {
         >
             <div class="flex items-center">
                 <div class="md:ml-4 md:flex md:items-center gap-2">
+                    <div v-if="hasRole('admin')">
+                        <div class="form-control">
+                            <label class="label cursor-pointer">
+                                <span class="label-text mr-2">Show all</span>
+                                <input
+                                    v-model="showAll"
+                                    type="checkbox"
+                                    class="checkbox"
+                                    @change="update"
+                                />
+                            </label>
+                        </div>
+                    </div>
                     <a
                         :href="route('schedule.pdf')"
                         target="_blank"
@@ -97,7 +126,11 @@ onMounted(() => {
                         Download PDF
                     </a>
                     <Link
-                        :href="route('schedule.create')"
+                        :href="
+                            route('schedule.create', {
+                                cenro: hasRole('admin') ? 'true' : 'false',
+                            })
+                        "
                         class="disabled:text-gray-500 inline-flex hover:border-transparent items-center px-4 py-3 btn bg-slate-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-kwikweb dark:hover:bg-white focus:bg-kwikweb-200 dark:focus:bg-white active:bg-kwikweb-900 dark:active:bg-gray-300 focus:outline-none focus:ring-offset-2 transition ease-in-out duration-150"
                         ><PlusCircleIcon class="h-7" />Add Schedule</Link
                     >

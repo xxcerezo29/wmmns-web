@@ -20,15 +20,17 @@ class Driver extends Authenticatable
         'email',
         'truck_id',
         'mobile_number',
-        'password'
+        'password',
+        'cenro'
     ];
-    
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    public function AssignedTruck (){
+    public function AssignedTruck()
+    {
         return $this->hasOne(Truck::class, 'id', 'truck_id');
     }
 

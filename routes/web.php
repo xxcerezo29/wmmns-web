@@ -37,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/truck-create', [TrucksController::class, 'create'])->name('trucks.create');
         Route::post('/truck-create', [TrucksController::class, 'store'])->name('trucks.store');
         Route::get('/truck-edit/{id}', [TrucksController::class, 'edit'])->name('trucks.edit');
+        Route::post('/truck-edit/{truck}', [TrucksController::class, 'update'])->name('trucks.update');
         Route::delete('/truck-delete/{id}', [TrucksController::class, 'destroy'])->name('trucks.delete');
         Route::get('/truck-show/{id}', [TrucksController::class, 'show'])->name('trucks.show');
         Route::get('/truck-list', [TrucksController::class, 'downloadPDF'])->name('trucks.pdf');

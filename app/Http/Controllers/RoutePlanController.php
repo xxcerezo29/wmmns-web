@@ -15,14 +15,19 @@ class RoutePlanController extends Controller
     {
         $user = Auth::user();
         if ($user->hasRole('admin')) {
-            $routes = Route::when($request->searchTerm, function ($query, $searchTerm) {
-                return $query->where('name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
-            })->paginate(10)->withQueryString();
+            if ($request->show === "true") {
+                $routes = Route::when($request->searchTerm, function ($query, $searchTerm) {
+                    return $query->where('name', 'like', '%' . $searchTerm . '%');
+                })->paginate(10)->withQueryString();
+            } else {
+                $routes = Route::where('barangay', "CENRO")->when($request->searchTerm, function ($query, $searchTerm) {
+                    return $query->where('name', 'like', '%' . $searchTerm . '%');
+                })->paginate(10)->withQueryString();
+            }
+
         } else {
             $routes = Route::when($request->searchTerm, function ($query, $searchTerm) {
-                return $query->where('name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('barangay', 'like', '%' . $searchTerm . '%');
+                return $query->where('name', 'like', '%' . $searchTerm . '%');
             })->where('barangay', $user->barangay)->paginate(10)->withQueryString();
         }
 
@@ -60,16 +65,28 @@ class RoutePlanController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'barangay' => 'required|string|max:255',
-            'waypoint' => 'required|array'
+            'waypoint' => 'required|array',
+            'cenro' => 'nullable'
         ]);
 
         DB::beginTransaction();
         try {
-            $route = Route::create([
-                'name' => $request->name,
-                'barangay' => $request->barangay,
-                'waypoint' => json_encode($request->waypoint)
-            ]);
+            if ($request->cenro === true) {
+                $route = Route::create([
+                    'name' => $request->name,
+                    'barangay' => 'CENRO',
+                    'waypoint' => json_encode($request->waypoint),
+                    'cenro' => true
+                ]);
+            } else {
+                $route = Route::create([
+                    'name' => $request->name,
+                    'barangay' => $request->barangay,
+                    'waypoint' => json_encode($request->waypoint),
+                    'cenro' => true
+                ]);
+            }
+
 
             DB::commit();
 
@@ -87,22 +104,29 @@ class RoutePlanController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'barangay' => 'required|string|max:255',
-            'waypoint' => 'required|array'
+            'waypoint' => 'required|array',
+            'cenro' => 'nullable'
         ]);
 
         $route = Route::findOrFail($id);
 
         DB::beginTransaction();
         try {
-
-
-
-            $route->update([
-                'name' => $request->name,
-                'barangay' => $request->barangay,
-                'waypoint' => json_encode($request->waypoint)
-            ]);
-
+            if ($request->cenro === true) {
+                $route->update([
+                    'name' => $request->name,
+                    'barangay' => 'CENRO',
+                    'waypoint' => json_encode($request->waypoint),
+                    'cenro' => true
+                ]);
+            } else {
+                $route->update([
+                    'name' => $request->name,
+                    'barangay' => $request->barangay,
+                    'waypoint' => json_encode($request->waypoint),
+                    'cenro' => false
+                ]);
+            }
             DB::commit();
 
             return redirect(route('routes.list'))->with(['message' => 'Route Updated.', 'status' => 'success']);

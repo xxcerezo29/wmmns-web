@@ -15,6 +15,7 @@ import TextInput from "@/Components/ui/daisyUI/TextInput.vue";
 const form = useForm({
     plate_number: "",
     barangay: usePage().props.auth.user.barangay,
+    cenro: hasRole("admin") ? true : false,
 });
 
 const toast = useToast();
@@ -72,8 +73,23 @@ onMounted(() => {
                                 placeholder="ABC123"
                                 :error="form.errors.plate_number"
                             />
+                            <div class="max-w-xs" v-if="hasRole('admin')">
+                                <div class="form-control max-w-xs">
+                                    <label class="label cursor-pointer">
+                                        <span class="label-text"
+                                            >For CENRO?</span
+                                        >
+                                        <input
+                                            v-model="form.cenro"
+                                            type="checkbox"
+                                            class="checkbox"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
                             <label
-                                v-if="hasRole('admin')"
+                                v-if="hasRole('admin') && form.cenro === false"
                                 class="form-control w-full max-w-xs mt-2"
                             >
                                 <div class="label">

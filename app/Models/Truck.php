@@ -12,16 +12,17 @@ class Truck extends Model
     protected $fillable = [
         'barangay',
         'plate_number',
+        'cenro'
     ];
 
     public function schedule()
     {
         return $this->hasMany(CollectionSchedule::class, 'truck_id', 'id');
     }
-    
+
     public function driver()
     {
         return $this->hasOne(Driver::class, 'truck_id', 'id');
     }
-    
+
 }

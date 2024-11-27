@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, usePage, Link } from "@inertiajs/vue3";
+import { Head, usePage, Link, router } from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import { useForm } from "@inertiajs/vue3";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -8,6 +8,7 @@ import { onMounted, ref } from "vue";
 import { useToast } from "vue-toastification";
 import { ICities, Roles, Route, Schedule, Truck } from "../../types/interface";
 import axios from "axios";
+import { hasRole } from "@/functions";
 
 const props = defineProps<{
     routes: Array<Route>;
@@ -22,11 +23,25 @@ const form = useForm({
     time: props.Sched.time ? props.Sched.time.substring(0, 5) : "",
 
     barangay: props.Sched.barangay,
+    cenro: hasRole("admin") ? Boolean(props.Sched.cenro) : false,
 });
 
 const toast = useToast();
 
 const barangay = ref<Array<ICities>>([]);
+
+const update = () => {
+    router.get(
+        route("schedule.update", { id: props.Sched.id }),
+        {
+            cenro: form.cenro,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+        }
+    );
+};
 
 const submit = () => {
     form.post(route("schedule.update", { id: props.Sched.id }), {
@@ -75,6 +90,21 @@ onMounted(() => {
                 >
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
+                            <div class="max-w-xs" v-if="hasRole('admin')">
+                                <div class="form-control max-w-xs">
+                                    <label class="label cursor-pointer">
+                                        <span class="label-text"
+                                            >For CENRO?</span
+                                        >
+                                        <input
+                                            v-model="form.cenro"
+                                            type="checkbox"
+                                            class="checkbox"
+                                            @change="update"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
                             <label class="form-control w-full max-w-xs mt-2">
                                 <div class="label">
                                     <span class="label-text">Truck</span>
@@ -154,7 +184,33 @@ onMounted(() => {
                                 v-if="form.errors.route"
                                 >{{ form.errors.route }}</span
                             >
-
+                            <label
+                                v-if="hasRole('admin') && form.cenro === false"
+                                class="form-control w-full max-w-xs mt-2"
+                            >
+                                <div class="label">
+                                    <span class="label-text">Barangay</span>
+                                </div>
+                                <select
+                                    v-model="form.barangay"
+                                    class="select select-bordered"
+                                >
+                                    <option disabled selected value="">
+                                        Please Choose Barangay
+                                    </option>
+                                    <option
+                                        v-for="(_barangay, index) in barangay"
+                                        :value="_barangay.name"
+                                    >
+                                        {{ _barangay.name }}
+                                    </option>
+                                </select>
+                            </label>
+                            <span
+                                class="text-red-700"
+                                v-if="form.errors.barangay"
+                                >{{ form.errors.barangay }}</span
+                            >
                             <div class="flex justify-end mt-5 gap-2">
                                 <Link
                                     :href="route('schedule.calendar')"

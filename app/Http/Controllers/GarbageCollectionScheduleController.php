@@ -15,14 +15,23 @@ use Inertia\Inertia;
 
 class GarbageCollectionScheduleController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
         $user = Auth::user();
 
+        if (!$request->show)
+            $request->show = 'false';
+
         $query = CollectionSchedule::query()
             ->with(['truck', 'route'])
-            ->when(!$user->hasRole('admin'), function ($query) use ($user) {
+            ->when(!$user->hasRole('admin'), function ($query) use ($user, $request) {
                 $query->where('barangay', $user->barangay);
+
+            })
+            ->when($user->hasRole('admin'), function ($query) use ($user, $request) {
+                if ($request->show === 'false') {
+                    $query->where('barangay', 'CENRO');
+                }
             })
             ->orderBy('schedule')
             ->orderBy('time')
@@ -39,6 +48,8 @@ class GarbageCollectionScheduleController extends Controller
                     'class' => 'collection-schedule',
                 ];
             });
+
+
 
         // $paginatedSchedule = $query->paginate(20);
 
@@ -84,13 +95,19 @@ class GarbageCollectionScheduleController extends Controller
         ]);
     }
 
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         $schedule = CollectionSchedule::findOrFail($id);
 
         if (Auth::user()->hasRole('admin')) {
-            $trucks = Truck::all();
-            $routes = Route::all();
+            if ($request->cenro === 'true') {
+                $trucks = Truck::where('barangay', 'CENRO')->get();
+                $routes = Route::where('barangay', 'CENRO')->get();
+            } else {
+                $trucks = Truck::all();
+                $routes = Route::all();
+            }
+
         } else {
             $trucks = Truck::where('barangay', Auth::user()->barangay)->get();
             $routes = Route::where('barangay', Auth::user()->barangay)->get();
@@ -103,11 +120,17 @@ class GarbageCollectionScheduleController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
         if (Auth::user()->hasRole('admin')) {
-            $trucks = Truck::all();
-            $routes = Route::all();
+            if ($request->cenro === 'true') {
+                $trucks = Truck::where('barangay', 'CENRO')->get();
+                $routes = Route::where('barangay', 'CENRO')->get();
+            } else {
+                $trucks = Truck::all();
+                $routes = Route::all();
+            }
+
         } else {
             $trucks = Truck::where('barangay', Auth::user()->barangay)->get();
             $routes = Route::where('barangay', Auth::user()->barangay)->get();
@@ -125,18 +148,32 @@ class GarbageCollectionScheduleController extends Controller
             'schedule' => 'required',
             'truck_id' => 'required|exists:trucks,id',
             'time' => 'required|date_format:H:i',
-            'route' => 'required|exists:routes,id'
+            'route' => 'required|exists:routes,id',
+            'cenro' => 'nullable'
         ]);
 
         DB::beginTransaction();
         try {
-            $schedule = CollectionSchedule::create([
-                'truck_id' => $request->truck_id,
-                'schedule' => $request->schedule,
-                'time' => $request->time,
-                'route_id' => $request->route,
-                'barangay' => $request->barangay
-            ]);
+            if ($request->cenro === true) {
+                $schedule = CollectionSchedule::create([
+                    'truck_id' => $request->truck_id,
+                    'schedule' => $request->schedule,
+                    'time' => $request->time,
+                    'route_id' => $request->route,
+                    'barangay' => 'CENRO',
+                    'cenro' => true
+                ]);
+            } else {
+                $schedule = CollectionSchedule::create([
+                    'truck_id' => $request->truck_id,
+                    'schedule' => $request->schedule,
+                    'time' => $request->time,
+                    'route_id' => $request->route,
+                    'barangay' => $request->barangay,
+                    'cenro' => false
+                ]);
+            }
+
 
             DB::commit();
 
@@ -155,7 +192,8 @@ class GarbageCollectionScheduleController extends Controller
             'schedule' => 'required',
             'truck_id' => 'required|exists:trucks,id',
             'time' => 'required|date_format:H:i',
-            'route' => 'required|exists:routes,id'
+            'route' => 'required|exists:routes,id',
+            'cenro' => 'nullable'
         ]);
 
         DB::beginTransaction();
@@ -163,13 +201,26 @@ class GarbageCollectionScheduleController extends Controller
 
             $schedule = CollectionSchedule::findOrFail($id);
 
-            $schedule->update([
-                'truck_id' => $request->truck_id,
-                'schedule' => $request->schedule,
-                'time' => $request->time,
-                'route_id' => $request->route,
-                'barangay' => $request->barangay
-            ]);
+            if ($request->cenro === true) {
+                $schedule->update([
+                    'truck_id' => $request->truck_id,
+                    'schedule' => $request->schedule,
+                    'time' => $request->time,
+                    'route_id' => $request->route,
+                    'barangay' => 'CENRO',
+                    'cenro' => true
+                ]);
+            } else {
+                $schedule->update([
+                    'truck_id' => $request->truck_id,
+                    'schedule' => $request->schedule,
+                    'time' => $request->time,
+                    'route_id' => $request->route,
+                    'barangay' => $request->barangay,
+                    'cenro' => false
+                ]);
+            }
+
 
             DB::commit();
 

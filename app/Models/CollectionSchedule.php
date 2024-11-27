@@ -15,7 +15,8 @@ class CollectionSchedule extends Model
         'time',
         'route_id',
         'barangay',
-        'schedule'
+        'schedule',
+        'cenro'
     ];
 
     public function truck()

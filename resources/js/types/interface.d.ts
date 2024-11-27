@@ -25,6 +25,7 @@ export interface Schedule {
     route_id: number;
     time: string;
     truck_id: number;
+    cenro: boolean;
     truck: Truck;
     route: Route;
 }
@@ -46,6 +47,7 @@ export interface Route {
     name: string;
     barangay: string;
     waypoint: string;
+    cenro: boolean;
 }
 
 export interface IChartData {
@@ -64,6 +66,7 @@ export interface Truck {
     barangay: string;
     plate_number: string;
     driver: Driver;
+    cenro: boolean;
 }
 
 export interface Resident {

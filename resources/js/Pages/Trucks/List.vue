@@ -17,20 +17,24 @@ import SecondaryButton from "@/Components/ui/daisyUI/SecondaryButton.vue";
 import Modal from "@/Components/ui/daisyUI/Modal.vue";
 import LinkButton from "@/Components/ui/daisyUI/LinkButton.vue";
 import Pagination from "@/Components/ui/daisyUI/Pagination.vue";
+import { hasRole } from "@/functions";
 
 const props = defineProps<{
     trucks: paginated<Truck>;
+    show: string;
 }>();
 
 const toast = useToast();
 const targetToDelete = ref();
 const searchTerm = ref("");
+const showAll = ref();
 
 const search = () => {
     router.get(
         route("trucks.list"),
         {
             searchTerm: searchTerm.value,
+            show: showAll.value,
         },
         {
             preserveScroll: true,
@@ -81,6 +85,19 @@ onMounted(() => {
                             @keyup="search"
                             v-model="searchTerm"
                         />
+                    </div>
+                    <div v-if="hasRole('admin')">
+                        <div class="form-control">
+                            <label class="label cursor-pointer">
+                                <span class="label-text mr-2">Show all</span>
+                                <input
+                                    v-model="showAll"
+                                    type="checkbox"
+                                    class="checkbox"
+                                    @change="search"
+                                />
+                            </label>
+                        </div>
                     </div>
                     <LinkButton
                         :href="route('trucks.create')"
