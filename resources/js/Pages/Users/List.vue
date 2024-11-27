@@ -120,7 +120,7 @@ onMounted(() => {
                                         v-for="(user, index) in props.users
                                             .data"
                                     >
-                                        <td>{{ index + 1 }}</td>
+                                        <td>{{ props.users.from + index }}</td>
                                         <td>
                                             {{ user.firstname }}
                                             {{ user.lastname }}

@@ -8,6 +8,7 @@ import { onMounted, ref } from "vue";
 import { useToast } from "vue-toastification";
 import { ICities, Roles, Route, Truck } from "../../types/interface";
 import axios from "axios";
+import { hasRole } from "@/functions";
 
 const props = defineProps<{
     routes: Array<Route>;
@@ -153,6 +154,33 @@ onMounted(() => {
                                 class="text-red-700"
                                 v-if="form.errors.route"
                                 >{{ form.errors.route }}</span
+                            >
+                            <label
+                                v-if="hasRole('admin')"
+                                class="form-control w-full max-w-xs mt-2"
+                            >
+                                <div class="label">
+                                    <span class="label-text">Barangay</span>
+                                </div>
+                                <select
+                                    v-model="form.barangay"
+                                    class="select select-bordered"
+                                >
+                                    <option disabled selected value="">
+                                        Please Choose Barangay
+                                    </option>
+                                    <option
+                                        v-for="(_barangay, index) in barangay"
+                                        :value="_barangay.name"
+                                    >
+                                        {{ _barangay.name }}
+                                    </option>
+                                </select>
+                            </label>
+                            <span
+                                class="text-red-700"
+                                v-if="form.errors.barangay"
+                                >{{ form.errors.barangay }}</span
                             >
 
                             <div class="flex justify-end mt-5 gap-2">

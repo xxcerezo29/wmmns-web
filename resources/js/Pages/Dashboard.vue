@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import Stat from '@/Components/ui/daisyUI/Stat.vue';
-import LineChart from '@/Components/ui/LineChart.vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { UsersIcon } from '@heroicons/vue/24/outline';
-import { Head } from '@inertiajs/vue3';
-import { IChartData } from '../types/interface';
+import Stat from "@/Components/ui/daisyUI/Stat.vue";
+import LineChart from "@/Components/ui/LineChart.vue";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { UsersIcon } from "@heroicons/vue/24/outline";
+import { Head } from "@inertiajs/vue3";
+import { IChartData } from "../types/interface";
 
 const props = defineProps<{
     stats: Array<{
-        label: string,
-        value: string|number,
-        description: string,
-    }>
-    complaintChartData: IChartData
+        label: string;
+        value: string | number;
+        description: string;
+    }>;
+    complaintChartData: IChartData;
 }>();
 </script>
 
@@ -21,13 +21,19 @@ const props = defineProps<{
 
     <AuthenticatedLayout>
         <template #mobileMenuName>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Dashboard
+            </h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-7">
-                    <div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+                <div
+                    class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-7"
+                >
+                    <div
+                        class="stats stats-vertical lg:stats-horizontal shadow w-full"
+                    >
                         <Stat v-for="(stat, index) in props.stats" :stat="stat">
                             <template #icon>
                                 <UsersIcon class="h-7" />
@@ -35,9 +41,19 @@ const props = defineProps<{
                         </Stat>
                     </div>
                     <div class="flex w-full gap-2">
-                        <LineChart :charData="props.complaintChartData"/>
+                        <LineChart :charData="props.complaintChartData" />
                     </div>
-                    <div class="p-6 text-gray-900">You're logged in!</div>
+                    <div class="p-6 text-gray-900">
+                        You're logged in as
+                        <span class="capitalize">
+                            {{
+                                $page.props.auth.roles
+                                    ? $page.props.auth.roles[0].name
+                                    : ""
+                            }}
+                        </span>
+                        !
+                    </div>
                 </div>
             </div>
         </div>

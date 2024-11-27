@@ -4,10 +4,12 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { IComplaint } from "../../types/interface";
 import SecondaryButton from "@/Components/ui/daisyUI/SecondaryButton.vue";
 import { ref } from "vue";
+import Modal from "@/Components/ui/daisyUI/Modal.vue";
 
 const props = defineProps<{
     complaint: IComplaint;
 }>();
+const actionType = ref("");
 
 const formatReportType = (type: string) => {
     return type
@@ -24,12 +26,24 @@ const selectImage = (image: string) => {
 };
 
 const reviewed_submit = () => {
-    form.get(route("complaints.reviewed", { id: props.complaint.id }));
+    // form.get(route("complaints.reviewed", { id: props.complaint.id }));
+    actionType.value = "reviewed";
 };
 const resolved_submit = () => {
-    form.get(route("complaints.resolved", { id: props.complaint.id }));
+    actionType.value = "resolved";
+    // form.get(route("complaints.resolved", { id: props.complaint.id }));
 };
 const closed_submit = () => {
+    actionType.value = "closed";
+    // form.get(route("complaints.closed", { id: props.complaint.id }));
+};
+const review = () => {
+    form.get(route("complaints.reviewed", { id: props.complaint.id }));
+};
+const resolved = () => {
+    form.get(route("complaints.resolved", { id: props.complaint.id }));
+};
+const closed = () => {
     form.get(route("complaints.closed", { id: props.complaint.id }));
 };
 </script>
@@ -235,7 +249,8 @@ const closed_submit = () => {
                             <form
                                 v-if="
                                     complaint.status !== 'resolved' &&
-                                    complaint.status !== 'pending'
+                                    complaint.status !== 'pending' &&
+                                    complaint.status !== 'closed'
                                 "
                                 @submit.prevent="closed_submit"
                             >
@@ -243,6 +258,8 @@ const closed_submit = () => {
                                     type="submit"
                                     v-if="complaint.resolved_at === null"
                                     class="!bg-red-600 text-white"
+                                    onclick="validationModal.showModal()"
+                                    @click="closed_submit"
                                     >Mark as Closed</SecondaryButton
                                 >
                             </form>
@@ -257,6 +274,8 @@ const closed_submit = () => {
                                         complaint.status === 'pending'
                                     "
                                     class="!bg-green-600 text-white"
+                                    onclick="validationModal.showModal()"
+                                    @click="reviewed_submit"
                                     >Mark as Reviewed</SecondaryButton
                                 >
                             </form>
@@ -268,6 +287,8 @@ const closed_submit = () => {
                                     type="submit"
                                     v-if="complaint.status === 'reviewed'"
                                     class="!bg-green-600 text-white"
+                                    @click="resolved_submit"
+                                    onclick="validationModal.showModal()"
                                     >Mark as Resolved</SecondaryButton
                                 >
                             </form>
@@ -276,5 +297,53 @@ const closed_submit = () => {
                 </div>
             </div>
         </div>
+        <Modal id="validationModal" title="Confirm Review Action">
+            <template #body>
+                <p
+                    v-if="actionType === 'reviewed'"
+                    class="text-sm text-gray-600"
+                >
+                    Are you sure you want to mark this complaint as reviewed?
+                    This action cannot be undone.
+                </p>
+                <p
+                    v-else-if="actionType === 'resolved'"
+                    class="text-sm text-gray-600"
+                >
+                    Are you sure you want to mark this complaint as resolved?
+                    This action cannot be undone.
+                </p>
+                <p
+                    v-else-if="actionType === 'closed'"
+                    class="text-sm text-gray-600"
+                >
+                    Are you sure you want to mark this complaint as closed? This
+                    action cannot be undone.
+                </p>
+            </template>
+            <template #actions>
+                <button
+                    @click="review"
+                    class="px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded hover:bg-blue-700"
+                    v-if="actionType === 'reviewed'"
+                >
+                    Mark as Reviewed
+                </button>
+                <button
+                    @click="resolved"
+                    class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded hover:bg-blue-700"
+                    v-else-if="actionType === 'resolved'"
+                >
+                    Mark as Resolved
+                </button>
+                <button
+                    @click="closed"
+                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-blue-700"
+                    v-else-if="actionType === 'closed'"
+                >
+                    Mark as Closed
+                </button>
+            </template>
+        </Modal>
     </AuthenticatedLayout>
 </template>

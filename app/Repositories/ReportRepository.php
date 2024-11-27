@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Report;
 use Carbon\Carbon;
@@ -15,7 +16,11 @@ class ReportRepository
      */
     public function getCurrentCount()
     {
-        return Report::count();
+        if (Auth::user()->hasRole('admin')) {
+            return Report::count();
+        } else {
+            return Report::where('barangay', Auth::user()->barangay)->count();
+        }
     }
 
     /**
@@ -26,7 +31,11 @@ class ReportRepository
      */
     public function getCountByStatus($status)
     {
-        return Report::where('status', $status)->count();
+        if (Auth::user()->hasRole('admin')) {
+            return Report::where('status', $status)->count();
+        } else {
+            return Report::where('barangay', Auth::user()->barangay)->where('status', $status)->count();
+        }
     }
 
     /**
@@ -40,17 +49,36 @@ class ReportRepository
     {
         switch ($period) {
             case 'week':
-                return Report::where('status', $status)
-                    ->whereBetween('created_at', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
-                    ->count();
+                if (Auth::user()->hasRole('admin')) {
+                    return Report::where('status', $status)
+                        ->whereBetween('created_at', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
+                        ->count();
+                } else {
+                    return Report::where('barangay', Auth::user()->barangay)->where('status', $status)
+                        ->whereBetween('created_at', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
+                        ->count();
+                }
             case 'month':
-                return Report::where('status', $status)
-                    ->whereMonth('created_at', Carbon::now()->subMonth()->month)
-                    ->count();
+                if (Auth::user()->hasRole('admin')) {
+                    return Report::where('status', $status)
+                        ->whereMonth('created_at', Carbon::now()->subMonth()->month)
+                        ->count();
+                } else {
+                    return Report::where('barangay', Auth::user()->barangay)->where('status', $status)
+                        ->whereMonth('created_at', Carbon::now()->subMonth()->month)
+                        ->count();
+                }
             default: // 'day'
-                return Report::where('status', $status)
-                    ->whereDate('created_at', Carbon::now()->subDay())
-                    ->count();
+                if (Auth::user()->hasRole('admin')) {
+                    return Report::where('status', $status)
+                        ->whereDate('created_at', Carbon::now()->subDay())
+                        ->count();
+                } else {
+                    return Report::where('barangay', Auth::user()->barangay)
+                        ->where('status', $status)
+                        ->whereDate('created_at', Carbon::now()->subDay())
+                        ->count();
+                }
         }
     }
 
@@ -58,11 +86,21 @@ class ReportRepository
     {
         switch ($period) {
             case 'week':
-                return Report::whereBetween('created_at', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
-                    ->count();
+                if (Auth::user()->hasRole('admin')) {
+                    return Report::whereBetween('created_at', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
+                        ->count();
+                } else {
+                    return Report::where('barangay', Auth::user()->barangay)->whereBetween('created_at', [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()])
+                        ->count();
+                }
             case 'month':
-                return Report::whereMonth('created_at', Carbon::now()->subMonth()->month)
-                    ->count();
+                if (Auth::user()->hasRole('admin')) {
+                    return Report::whereMonth('created_at', Carbon::now()->subMonth()->month)
+                        ->count();
+                } else {
+                    return Report::where('barangay', Auth::user()->barangay)->whereMonth('created_at', Carbon::now()->subMonth()->month)
+                        ->count();
+                }
             default: // 'day'
                 return Report::whereDate('created_at', Carbon::now()->subDay())
                     ->count();
@@ -92,12 +130,12 @@ class ReportRepository
         $direction = $change > 0 ? '↗︎' : ($change < 0 ? '↘︎' : '→');
 
         return $formattedSummary = [
-            'label' => ucfirst($status).' Complaints',
+            'label' => ucfirst($status) . ' Complaints',
             'value' => number_format($currentCount),
             'change' => $change,
             'percentChange' => $percentChange,
             'direction' => $direction,
-            'description' => "{$direction} " . abs($change). "({$percentChange}%)",
+            'description' => "{$direction} " . abs($change) . "({$percentChange}%)",
         ];
     }
     public function getComplaintsSummary($period = 'day')
@@ -121,7 +159,7 @@ class ReportRepository
             'change' => $change,
             'percentChange' => $percentChange,
             'direction' => $direction,
-            'description' => "{$direction} " . abs($change). "({$percentChange}%)",
+            'description' => "{$direction} " . abs($change) . "({$percentChange}%)",
         ];
 
         return $formattedSummary;
@@ -169,32 +207,61 @@ class ReportRepository
             for ($i = $range - 1; $i >= 0; $i--) {
                 $date = Carbon::now()->subDays($i);
                 $labels[] = $date->format('d M Y'); // e.g., "12 Sep 2024"
-                
-                // Get the count for resolved reports (where resolved_at is on the given date)
-                $resolvedData[] = Report::whereDate('resolved_at', $date->format('Y-m-d'))
-                                        ->count();
 
-                // Get the count for unresolved reports (where resolved_at is null and created_at is the same day)
-                $unresolvedData[] = Report::whereDate('created_at', $date->format('Y-m-d'))
-                                          ->whereNull('resolved_at')
-                                          ->count();
+                // Get the count for resolved reports (where resolved_at is on the given date)
+                if (Auth::user()->hasRole('admin')) {
+                    $resolvedData[] = Report::whereDate('resolved_at', $date->format('Y-m-d'))
+                        ->count();
+
+
+                    // Get the count for unresolved reports (where resolved_at is null and created_at is the same day)
+                    $unresolvedData[] = Report::whereDate('created_at', $date->format('Y-m-d'))
+                        ->whereNull('resolved_at')
+                        ->count();
+                } else {
+                    $resolvedData[] = Report::where('barangay', Auth::user()->barangay)->whereDate('resolved_at', $date->format('Y-m-d'))
+                        ->count();
+
+
+                    // Get the count for unresolved reports (where resolved_at is null and created_at is the same day)
+                    $unresolvedData[] = Report::where('barangay', Auth::user()->barangay)->whereDate('created_at', $date->format('Y-m-d'))
+                        ->whereNull('resolved_at')
+                        ->count();
+                }
+
             }
         } elseif ($period === 'month') {
             // For monthly reports (last $range months)
             for ($i = $range - 1; $i >= 0; $i--) {
                 $month = Carbon::now()->subMonths($i);
                 $labels[] = $month->format('F Y'); // e.g., "September 2024"
-                
-                // Get the count for resolved reports (where resolved_at is in the given month)
-                $resolvedData[] = Report::whereYear('resolved_at', $month->year)
-                                        ->whereMonth('resolved_at', $month->month)
-                                        ->count();
 
-                // Get the count for unresolved reports (where resolved_at is null and created_at is in the same month)
-                $unresolvedData[] = Report::whereYear('created_at', $month->year)
-                                          ->whereMonth('created_at', $month->month)
-                                          ->whereNull('resolved_at')
-                                          ->count();
+                if (Auth::user()->hasRole('admin')) {
+                    // Get the count for resolved reports (where resolved_at is in the given month)
+                    $resolvedData[] = Report::where('barangay', Auth::user()->barangay)
+                        ->whereYear('resolved_at', $month->year)
+                        ->whereMonth('resolved_at', $month->month)
+                        ->count();
+
+                    // Get the count for unresolved reports (where resolved_at is null and created_at is in the same month)
+                    $unresolvedData[] = Report::where('barangay', Auth::user()->barangay)
+                        ->whereYear('created_at', $month->year)
+                        ->whereMonth('created_at', $month->month)
+                        ->whereNull('resolved_at')
+                        ->count();
+                } else {
+                    $resolvedData[] = Report::where('barangay', Auth::user()->barangay)
+                        ->whereYear('resolved_at', $month->year)
+                        ->whereMonth('resolved_at', $month->month)
+                        ->count();
+
+                    // Get the count for unresolved reports (where resolved_at is null and created_at is in the same month)
+                    $unresolvedData[] = Report::where('barangay', Auth::user()->barangay)
+                        ->whereYear('created_at', $month->year)
+                        ->whereMonth('created_at', $month->month)
+                        ->whereNull('resolved_at')
+                        ->count();
+                }
             }
         }
 

@@ -118,7 +118,7 @@ onMounted(() => {
                                         v-for="(truck, index) in props.trucks
                                             .data"
                                     >
-                                        <td>{{ index + 1 }}</td>
+                                        <td>{{ props.trucks.from + index }}</td>
                                         <td>{{ truck.plate_number }}</td>
                                         <td>{{ truck.barangay }}</td>
                                         <td>

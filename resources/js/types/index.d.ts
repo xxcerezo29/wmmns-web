@@ -9,7 +9,7 @@ export interface User {
     roles: Array<{
         id: number;
         name: string;
-    }>
+    }>;
 }
 
 export interface Roles {
@@ -22,15 +22,17 @@ export interface Permissions {
     name: string;
 }
 
-export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
+export type PageProps<
+    T extends Record<string, unknown> = Record<string, unknown>
+> = T & {
     auth: {
         user: User;
-        roles: Roles;
+        roles: Array<Roles>;
         permissions: Permissions;
     };
     flash: {
         message: string;
         status: string;
     };
-    currentRouteName:string;
-}
+    currentRouteName: string;
+};

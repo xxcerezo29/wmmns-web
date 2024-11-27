@@ -8,6 +8,7 @@ import { onMounted, ref } from "vue";
 import { useToast } from "vue-toastification";
 import { ICities, Roles } from "../../types/interface";
 import axios from "axios";
+import TextInput from "@/Components/ui/daisyUI/TextInput.vue";
 
 const props = defineProps<{
     roles: Array<Roles>;
@@ -72,65 +73,36 @@ onMounted(() => {
                 >
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
-                            <label
-                                class="input input-bordered flex items-center gap-2"
-                            >
-                                Firstname
-                                <input
-                                    v-model="form.firstname"
-                                    type="text"
-                                    class="grow"
-                                    placeholder="Daisy"
-                                />
-                            </label>
-                            <span
-                                class="text-red-700"
-                                v-if="form.errors.firstname"
-                                >{{ form.errors.firstname }}</span
-                            >
-                            <label
-                                class="input input-bordered flex items-center gap-2 mt-2"
-                            >
-                                Middlename
-                                <input
-                                    v-model="form.middlename"
-                                    type="text"
-                                    class="grow"
-                                    placeholder="Daisy"
-                                />
-                            </label>
-                            <span
-                                class="text-red-700"
-                                v-if="form.errors.middlename"
-                                >{{ form.errors.middlename }}</span
-                            >
-                            <label
-                                class="input input-bordered flex items-center gap-2 mt-2"
-                            >
-                                Lastname
-                                <input
-                                    v-model="form.lastname"
-                                    type="text"
-                                    class="grow"
-                                    placeholder="Daisy"
-                                />
-                            </label>
-                            <span
-                                class="text-red-700"
-                                v-if="form.errors.lastname"
-                                >{{ form.errors.lastname }}</span
-                            >
-                            <label
-                                class="input input-bordered flex items-center gap-2 mt-2"
-                            >
-                                Email
-                                <input
-                                    v-model="form.email"
-                                    type="email"
-                                    class="grow"
-                                    placeholder="example@example.com"
-                                />
-                            </label>
+                            <TextInput
+                                v-model="form.firstname"
+                                type="text"
+                                label="Firstname"
+                                placeholder="John"
+                                :error="form.errors.firstname"
+                            />
+                            <TextInput
+                                v-model="form.middlename"
+                                type="text"
+                                label="Middlename"
+                                placeholder="Trump"
+                                :error="form.errors.middlename"
+                            />
+
+                            <TextInput
+                                v-model="form.lastname"
+                                type="text"
+                                label="Lastname"
+                                placeholder="Doe"
+                                :error="form.errors.lastname"
+                            />
+
+                            <TextInput
+                                v-model="form.email"
+                                type="email"
+                                label="Email"
+                                placeholder="johndoe@example.com"
+                                :error="form.errors.email"
+                            />
 
                             <label class="form-control w-full max-w-xs mt-2">
                                 <div class="label">

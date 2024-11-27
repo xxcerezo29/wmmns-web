@@ -8,6 +8,7 @@ import { hasRole } from "@/functions";
 import PrimaryButton from "@/Components/ui/daisyUI/PrimaryButton.vue";
 import Map from "./Component/Map.vue";
 import { useToast } from "vue-toastification";
+import TextInput from "@/Components/ui/daisyUI/TextInput.vue";
 
 interface waypoint {
     lat: number;
@@ -17,80 +18,99 @@ interface waypoint {
 const toast = useToast();
 
 const form = useForm({
-    name: '',
+    name: "",
     barangay: usePage().props.auth.user.barangay,
-    waypoint: [] as waypoint[]
-})
+    waypoint: [] as waypoint[],
+});
 
 const submit = () => {
-    form.post(route('routes.store'), {
+    form.post(route("routes.store"), {
         onError: () => {
             Object.values(form.errors).forEach((error) => {
                 toast.error(error);
             });
-        }
+        },
     });
-}
+};
 
 const barangay = ref<Array<ICities>>([]);
 
 onMounted(() => {
-    axios.get('https://psgc.gitlab.io/api/cities/023135000/barangays')
+    axios
+        .get("https://psgc.gitlab.io/api/cities/023135000/barangays")
         .then((response: any) => {
-            barangay.value = response.data
-        }).catch((err: any) => {
-            alert(err);
+            barangay.value = response.data;
         })
-})
-
+        .catch((err: any) => {
+            alert(err);
+        });
+});
 </script>
 <template>
-
     <Head title="New Route" />
     <AuthenticatedLayout>
         <template #mobileMenuName>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">New Route</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                New Route
+            </h2>
         </template>
 
         <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 ">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5">
-
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div
+                    class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-5 p-5"
+                >
                     <form @submit.prevent="submit">
-                        <label class="input input-bordered flex items-center gap-2">
-                            Route Name
-                            <input v-model="form.name" type="text" class="grow" placeholder="Daisy" />
-                        </label>
-                        <span class="text-red-700" v-if="form.errors.name">{{ form.errors.name }}</span>
+                        <TextInput
+                            v-model="form.name"
+                            type="text"
+                            label="Route Name"
+                            placeholder="Greenland Phase 1 -to- Patul P-1"
+                            :error="form.errors.name"
+                        />
 
-                        <label v-if="hasRole('admin')" class="form-control w-full max-w-xs mt-2">
+                        <label
+                            v-if="hasRole('admin')"
+                            class="form-control w-full max-w-xs mt-2"
+                        >
                             <div class="label">
                                 <span class="label-text">Barangay</span>
                             </div>
-                            <select v-model="form.barangay" class="select select-bordered">
-                                <option disabled selected value="">Please Choose Barangay</option>
-                                <option v-for="(_barangay, index) in barangay" :value="_barangay.name">
+                            <select
+                                v-model="form.barangay"
+                                class="select select-bordered"
+                            >
+                                <option disabled selected value="">
+                                    Please Choose Barangay
+                                </option>
+                                <option
+                                    v-for="(_barangay, index) in barangay"
+                                    :value="_barangay.name"
+                                >
                                     {{ _barangay.name }}
                                 </option>
                             </select>
                         </label>
-                        <span class="text-red-700" v-if="form.errors.barangay">{{ form.errors.barangay }}</span>
+                        <span
+                            class="text-red-700"
+                            v-if="form.errors.barangay"
+                            >{{ form.errors.barangay }}</span
+                        >
 
                         <Map :form="form" />
 
-
                         <div class="flex justify-end mt-5 gap-2">
-                            <Link :href="route('routes.list')"
-                                class="inline-flex items-center btn px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150">
-                            Cancel</Link>
+                            <Link
+                                :href="route('routes.list')"
+                                class="inline-flex items-center btn px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md font-semibold text-xs text-gray-700 dark:text-gray-300 uppercase tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none disabled:opacity-25 transition ease-in-out duration-150"
+                            >
+                                Cancel</Link
+                            >
                             <PrimaryButton>Submit</PrimaryButton>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
-
     </AuthenticatedLayout>
-
 </template>

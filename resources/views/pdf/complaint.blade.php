@@ -7,37 +7,74 @@
     <title>Truck List</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 30px;
+            line-height: 1.5;
         }
+
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
         }
+
         .header img {
-            max-width: 100%;
-            height: auto;
+            height: 80px;
         }
+
+        .header h1 {
+            font-size: 24px;
+            margin: 10px 0;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            font-size: 14px;
+            margin: 0;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 14px;
         }
-        table, th, td {
+
+        table,
+        th,
+        td {
             border: 1px solid black;
         }
-        th, td {
-            padding: 10px;
+
+        th,
+        td {
+            padding: 8px;
             text-align: left;
         }
+
         th {
-            background-color: #f2f2f2;
+            background-color: #e6e6e6;
+            text-transform: uppercase;
+            font-size: 12px;
         }
+
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+
         tr:nth-child(odd) {
             background-color: #fff;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .footer p {
+            margin: 0;
         }
     </style>
 </head>

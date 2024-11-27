@@ -123,7 +123,9 @@ onMounted(() => {
                                         v-for="(driver, index) in props.drivers
                                             .data"
                                     >
-                                        <td>{{ index + 1 }}</td>
+                                        <td>
+                                            {{ props.drivers.from + index }}
+                                        </td>
                                         <td>
                                             {{ driver.firstname }}
                                             {{ driver.lastname }}

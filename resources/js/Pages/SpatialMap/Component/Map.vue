@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-import { parse } from 'terraformer-wkt-parser';
-import { onMounted, ref } from 'vue';
-import domtoimage from 'dom-to-image';
-import { router, useForm } from '@inertiajs/vue3';
-import axios from 'axios';
-import SecondaryButton from '@/Components/ui/daisyUI/SecondaryButton.vue';
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { parse } from "terraformer-wkt-parser";
+import { onMounted, ref } from "vue";
+import domtoimage from "dom-to-image";
+import { router, useForm } from "@inertiajs/vue3";
+import axios from "axios";
+import SecondaryButton from "@/Components/ui/daisyUI/SecondaryButton.vue";
 
 const props = defineProps<{
     spatial_map: Array<{
@@ -28,59 +28,96 @@ let map: L.Map | null = null;
 const labels: { [key: string]: L.Marker } = {};
 
 const getColor = (count: number) => {
-    if (count > 50) return '#046305'; // Very high density
-    if (count > 20) return '#038B03'; // High density
-    if (count > 10) return '#04CD03'; // Medium density
-    if (count > 0) return '#05EE07'; // Low density
-    return '#05FF05'; // No data
+    if (count > 50) return "#046305"; // Very high density
+    if (count > 20) return "#038B03"; // High density
+    if (count > 10) return "#04CD03"; // Medium density
+    if (count > 0) return "#05EE07"; // Low density
+    return "#05FF05"; // No data
 };
 
 const saveMapAsPNG = () => {
-    if (mapContainer.value) {
-        domtoimage.toPng(mapContainer.value)
+    if (mapContainer.value && map) {
+        const mapWidth = mapContainer.value.offsetWidth;
+        const mapHeight = mapContainer.value.offsetHeight;
+
+        mapContainer.value.style.padding = "0";
+        mapContainer.value.style.margin = "0";
+
+        map.invalidateSize();
+
+        domtoimage
+            .toPng(mapContainer.value, {
+                width: mapWidth,
+                height: mapHeight,
+                style: {
+                    backgroundColor: "#ffffff",
+                    padding: "0",
+                    margin: "0",
+                },
+            })
             .then((dataUrl: string) => {
-                const imageData = dataUrl.replace(/^data:image\/png;base64,/, '');
-
-                axios.post(route('spatial-map.pdf'), { image: imageData }, {
-                    responseType: 'blob',  // Ensure the response type is 'blob'
-                }).then((response) => {
-                    const url = URL.createObjectURL(response.data);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = 'SpatialMap.pdf';
-                    link.click();
-                    URL.revokeObjectURL(url);
-                })
-                .catch((error) => {
-                    console.error('Error sending image to server:', error);
-                });
-
+                const imageData = dataUrl.replace(
+                    /^data:image\/png;base64,/,
+                    ""
+                );
+                axios
+                    .post(
+                        route("spatial-map.pdf"),
+                        { image: imageData },
+                        {
+                            responseType: "blob", // Ensure the response type is 'blob'
+                        }
+                    )
+                    .then((response) => {
+                        const url = URL.createObjectURL(response.data);
+                        const link = document.createElement("a");
+                        link.href = url;
+                        link.download = "SpatialMap.pdf";
+                        link.click();
+                        URL.revokeObjectURL(url);
+                    })
+                    .catch((error) => {
+                        console.error("Error sending image to server:", error);
+                    });
             })
             .catch((error: any) => {
-                console.error('Error generating image:', error);
+                console.error("Error generating image:", error);
+            })
+            .finally(() => {
+                if (mapContainer.value) {
+                    mapContainer.value.style.padding = "10px"; // Or restore your padding here
+                    mapContainer.value.style.margin = "10px";
+                }
             });
     }
 };
 const addLegend = (map: L.Map) => {
-    const legend = new L.Control({ position: 'bottomright' });
+    const legend = new L.Control({ position: "bottomright" });
 
     legend.onAdd = () => {
-        const div = L.DomUtil.create('div', 'info legend');
-        const grades = [0, 10, 20, 50]
-        const labels = ['Low Density', 'Midium Density', 'High Density', 'Very High Density'];
+        const div = L.DomUtil.create("div", "info legend");
+        const grades = [0, 10, 20, 50];
+        const labels = [
+            "Low Density",
+            "Midium Density",
+            "High Density",
+            "Very High Density",
+        ];
 
-        div.innerHTML += '<b>Complaints Density</b><br>';
+        div.innerHTML += "<b>Complaints Density</b><br>";
         for (let i = 0; i < grades.length; i++) {
             div.innerHTML +=
                 `<i style="background:${getColor(grades[i] + 1)}"></i> ` +
-                `${grades[i]}${grades[i + 1] ? `&ndash;${grades[i + 1]}` : '+'} ${labels[i]}<br>`;
+                `${grades[i]}${
+                    grades[i + 1] ? `&ndash;${grades[i + 1]}` : "+"
+                } ${labels[i]}<br>`;
         }
 
         return div;
-    }
+    };
 
     legend.addTo(map);
-}
+};
 
 const updateLabels = () => {
     if (map) {
@@ -89,18 +126,22 @@ const updateLabels = () => {
             const count = props.report_counts[key] || 0;
             if (zoomLevel > 13) {
                 // Show full text when zoomed in
-                marker.setIcon(L.divIcon({
-                    className: 'barangay-label',
-                    html: `<div>${key}<br>Density: ${count}</div>`,
-                    iconSize: [100, 40]
-                }));
+                marker.setIcon(
+                    L.divIcon({
+                        className: "barangay-label",
+                        html: `<div>${key}<br>Density: ${count}</div>`,
+                        iconSize: [100, 40],
+                    })
+                );
             } else {
                 // Show only count when zoomed out
-                marker.setIcon(L.divIcon({
-                    className: 'barangay-label',
-                    html: `<div>${count}</div>`,
-                    iconSize: [100, 40]
-                }));
+                marker.setIcon(
+                    L.divIcon({
+                        className: "barangay-label",
+                        html: `<div>${count}</div>`,
+                        iconSize: [100, 40],
+                    })
+                );
             }
         }
     }
@@ -110,12 +151,12 @@ onMounted(() => {
     if (mapContainer.value) {
         map = L.map(mapContainer.value).setView([16.6942, 121.5512], 13);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
             attribution:
                 '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(map);
 
-        props.spatial_map.forEach(data => {
+        props.spatial_map.forEach((data) => {
             try {
                 const geometry = parse(data.geometry);
 
@@ -126,45 +167,47 @@ onMounted(() => {
                     style: {
                         color: color,
                         weight: 2,
-                        opacity: 0.5
-                    }
-                }).addTo(map!)
+                        opacity: 0.5,
+                    },
+                }).addTo(map!);
 
                 const bounds = L.geoJSON(geometry).getBounds();
                 const center = bounds.getCenter();
 
                 const marker = L.marker(center, {
                     icon: L.divIcon({
-                        className: 'barangay-label',
+                        className: "barangay-label",
                         html: `<div>${data.ADM4_EN}<br>Complaints: ${count}</div>`,
-                        iconSize: [100, 40]
-                    })
+                        iconSize: [100, 40],
+                    }),
                 }).addTo(map!);
 
                 labels[data.ADM4_EN] = marker;
             } catch (error) {
-                console.error('Error parsing geometry:', error);
+                console.error("Error parsing geometry:", error);
             }
-        })
-
-
+        });
 
         addLegend(map);
-        map.on('zoomend', updateLabels);
-
-
+        map.on("zoomend", updateLabels);
     }
-})
+});
 </script>
 
 <template>
-    <div class="m-auto" style="height:600px; width:800px">
+    <div class="m-auto" style="height: 600px; width: 800px">
         <div class="flex w-full gap-2 justify-end">
-            <SecondaryButton @click="saveMapAsPNG">Download PDF</SecondaryButton>
+            <SecondaryButton @click="saveMapAsPNG"
+                >Download PDF</SecondaryButton
+            >
         </div>
-        
-        <div id="map" ref="mapContainer" style="height: 500px; width: 100%;" class="mt-10">
-        </div>
+
+        <div
+            id="map"
+            ref="mapContainer"
+            style="height: 500px; width: 100%"
+            class="mt-10"
+        ></div>
     </div>
 </template>
 <style>

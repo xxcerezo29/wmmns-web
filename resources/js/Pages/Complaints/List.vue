@@ -93,7 +93,7 @@ const search = () => {
                                         v-for="(complaint, index) in props
                                             .complaints.data"
                                     >
-                                        <td>{{ index + 1 }}</td>
+                                        <td>{{ complaints.from + index }}</td>
                                         <td>
                                             {{ complaint.reference_number }}
                                         </td>

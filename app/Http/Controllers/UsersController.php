@@ -59,7 +59,7 @@ class UsersController extends Controller
     public function edit($id)
     {
         $roles = Role::all();
-        $user = User::findOrFail($id);
+        $user = User::with('roles')->findOrFail($id);
         return Inertia::render('Users/Update', [
             'user' => $user,
             'roles' => $roles
@@ -181,7 +181,8 @@ class UsersController extends Controller
 
             $pdf->loadView('pdf.userslist', ['users' => $users]);
 
-            return $pdf->download('UserList');
+            return $pdf->stream('UserList.pdf');
+            // return $pdf->download('UserList.pdf');
         } catch (Exception $e) {
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }

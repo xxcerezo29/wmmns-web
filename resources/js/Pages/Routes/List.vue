@@ -107,7 +107,7 @@ onMounted(() => {
                                         v-for="(_route, index) in props.routes
                                             .data"
                                     >
-                                        <td>{{ index + 1 }}</td>
+                                        <td>{{ props.routes.from + index }}</td>
                                         <td>{{ _route.name }}</td>
                                         <td>{{ _route.barangay }}</td>
                                         <td>

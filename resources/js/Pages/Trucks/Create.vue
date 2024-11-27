@@ -10,6 +10,7 @@ import { ICities, Roles } from "../../types/interface";
 import axios from "axios";
 import LinkButton from "@/Components/ui/daisyUI/LinkButton.vue";
 import { hasRole } from "@/functions";
+import TextInput from "@/Components/ui/daisyUI/TextInput.vue";
 
 const form = useForm({
     plate_number: "",
@@ -64,23 +65,13 @@ onMounted(() => {
                 >
                     <div class="p-6 text-gray-900">
                         <form @submit.prevent="submit">
-                            <label
-                                class="input input-bordered flex items-center gap-2"
-                            >
-                                Plate Number
-                                <input
-                                    v-model="form.plate_number"
-                                    type="text"
-                                    class="grow"
-                                    placeholder="Daisy"
-                                />
-                            </label>
-                            <span
-                                class="text-red-700"
-                                v-if="form.errors.plate_number"
-                                >{{ form.errors.plate_number }}</span
-                            >
-
+                            <TextInput
+                                v-model="form.plate_number"
+                                type="text"
+                                label="Plate Number"
+                                placeholder="ABC123"
+                                :error="form.errors.plate_number"
+                            />
                             <label
                                 v-if="hasRole('admin')"
                                 class="form-control w-full max-w-xs mt-2"
