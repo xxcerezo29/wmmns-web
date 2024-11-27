@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewSchedule;
 use App\Models\CollectionSchedule;
 use App\Models\Driver;
 use App\Models\Route;
@@ -176,6 +177,8 @@ class GarbageCollectionScheduleController extends Controller
 
 
             DB::commit();
+
+            event(new NewSchedule());
 
             return redirect(route('schedule.calendar'))->with(['message' => 'New Schedule Added.', 'status' => 'success']);
         } catch (Exception $e) {
