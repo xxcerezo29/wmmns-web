@@ -5,14 +5,19 @@ namespace App\Http\Controllers;
 use App\Events\NewSchedule;
 use App\Models\CollectionSchedule;
 use App\Models\Driver;
+use App\Models\Resident;
 use App\Models\Route;
 use App\Models\Truck;
+use Artisan;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
+use Log;
 
 class GarbageCollectionScheduleController extends Controller
 {
@@ -274,5 +279,16 @@ class GarbageCollectionScheduleController extends Controller
 
             return redirect()->back()->with(['message' => $e->getMessage(), 'status' => 'error']);
         }
+    }
+
+    public function send(Request $request)
+    {
+        Artisan::call('app:notify-user-schedule');
+
+        $output = Artisan::output();
+
+        Log::info($output);
+
+        return redirect(route('schedule.calendar'))->with(['message' => $output, 'status' => 'success']);
     }
 }

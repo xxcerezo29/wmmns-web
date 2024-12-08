@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Observers\V1\ScheduleObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy(ScheduleObserver::class)]
 class CollectionSchedule extends Model
 {
     use HasFactory;

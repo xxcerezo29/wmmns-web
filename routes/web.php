@@ -61,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('schedule')->group(function () {
         Route::get('/', [GarbageCollectionScheduleController::class, 'list'])->name('schedule.calendar');
+        Route::get('/notify', [GarbageCollectionScheduleController::class, 'send'])->name('schedule.notify');
         Route::get('/schedule-create', [GarbageCollectionScheduleController::class, 'create'])->name('schedule.create');
         Route::get('/schedule-view/{id}', [GarbageCollectionScheduleController::class, 'show'])->name('schedule.show');
         Route::get('/schedule-edit/{id}', [GarbageCollectionScheduleController::class, 'edit'])->name('schedule.edit');

@@ -163,7 +163,7 @@ class TrucksController extends Controller
             if ($user->hasRole('admin'))
                 $trucks = Truck::all();
             else
-                $trucks = Truck::where('barangay', $user->barangay)->all();
+                $trucks = Truck::where('barangay', $user->barangay)->get();
 
             $pdf = app('dompdf.wrapper');
             $pdf->getDomPDF()->set_option("enable_php", true);
